@@ -1,0 +1,57 @@
+[
+	{
+		"start": 1,
+		"end": 2,
+		"transportMethod": "Train",
+		"distance": 250.00,
+		"bidirectional": false
+	},
+	{
+		"start": 1,
+		"end": 2,
+		"transportMethod": "Bus",
+		"distance": 270.00
+	},
+	{
+		"start": 1,
+		"end": 2,
+		"transportMethod": "Plane",
+		"distance": 210.00
+	},
+	{
+		"start": 1,
+		"end": 3,
+		"transportMethod": "Bus",
+		"distance": 120.00
+	},
+	{
+		"start": 1,
+		"end": 3,
+		"transportMethod": "Train",
+		"distance": 150.00
+	},
+	{
+		"start": 1,
+		"end": 4,
+		"transportMethod": "Train",
+		"distance": 260.00
+	},
+	{
+		"start": 1,
+		"end": 4,
+		"transportMethod": "Bus",
+		"distance": 350.00
+	},
+	{
+		"start": 2,
+		"end": 4,
+		"transportMethod": "Car",
+		"distance": 400.00
+	},
+	{
+		"start": 2,
+		"end": 4,
+		"transportMethod": "Train",
+		"distance": 350.00
+	}
+]

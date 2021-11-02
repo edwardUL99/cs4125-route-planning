@@ -1,0 +1,26 @@
+[
+	{
+		"id": 1,
+		"name": "Cork",
+		"latitude": 1000.0,
+		"longitude": 2000.0
+	},
+	{
+		"id": 2,
+		"name": "Dublin",
+		"latitude": 1500.0,
+		"longitude": 2000.0
+	},
+	{
+		"id": 3,
+		"name": "Tralee",
+		"latitude": 1800.0,
+		"longitude": 2000.0
+	},
+	{
+		"id": 4,
+		"name": "Waterford",
+		"latitude": 2000.0,
+		"longitude": 1800.0
+	}
+]
