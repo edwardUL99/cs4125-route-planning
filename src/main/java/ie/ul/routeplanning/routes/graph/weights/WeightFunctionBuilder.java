@@ -7,14 +7,6 @@ package ie.ul.routeplanning.routes.graph.weights;
  */
 public class WeightFunctionBuilder {
     /**
-     * Indicates if emissions wants to be added to the weights
-     */
-    private boolean emissions;
-    /**
-     * Indicates if time wants to be added to the weights
-     */
-    private boolean time;
-    /**
      * The concrete implementation to use and it is defaulted
      */
     private WeightFunction weightFunction = new DistanceWeightFunction();
