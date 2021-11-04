@@ -21,7 +21,7 @@ import java.io.File;
  * Waypoint file format of waypoint id 0: 
  * ex. "0":{"name":"iedwcberg","lat":-25.214279029155648,"long":158.51958062559004}
  * 
- * Edge file format of waypoint id 0: 
+ * WeightFunction file format of waypoint id 0:
  * ex. "0":{"distance":16740,"start":168,"end":21,"transportMethod":"Car"}
  */
 public class CreateDummyData {
