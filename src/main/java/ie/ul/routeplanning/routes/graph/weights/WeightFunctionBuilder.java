@@ -64,6 +64,10 @@ public class WeightFunctionBuilder {
      * @return the built weight function
      */
     public WeightFunction build() {
+        WeightFunction weightFunction = this.weightFunction;
+
+        this.weightFunction = new DistanceWeightFunction(); // reset the builder so it can be re-used
+
         return weightFunction;
     }
 }
