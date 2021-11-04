@@ -1,4 +1,6 @@
-package ie.ul.routeplanning.routes.graph;
+package ie.ul.routeplanning.routes.graph.weights;
+
+import ie.ul.routeplanning.routes.graph.Edge;
 
 /**
  * This interface represents a weight/cost function for an edge

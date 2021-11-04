@@ -3,10 +3,10 @@ package ie.ul.routeplanning.routes.graph.function;
 import ie.ul.routeplanning.routes.Route;
 import ie.ul.routeplanning.routes.RouteLeg;
 import ie.ul.routeplanning.routes.Waypoint;
-import ie.ul.routeplanning.routes.graph.DistanceWeightFunction;
+import ie.ul.routeplanning.routes.graph.weights.DistanceWeightFunction;
 import ie.ul.routeplanning.routes.graph.Edge;
 import ie.ul.routeplanning.routes.graph.Graph;
-import ie.ul.routeplanning.routes.graph.WeightFunction;
+import ie.ul.routeplanning.routes.graph.weights.WeightFunction;
 
 import java.util.ArrayList;
 import java.util.List;

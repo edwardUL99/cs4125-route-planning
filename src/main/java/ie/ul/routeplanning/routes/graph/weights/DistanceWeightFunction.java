@@ -1,4 +1,6 @@
-package ie.ul.routeplanning.routes.graph;
+package ie.ul.routeplanning.routes.graph.weights;
+
+import ie.ul.routeplanning.routes.graph.Edge;
 
 /**
  * This class represents the simplest weight function, that is, using the distance as the weight

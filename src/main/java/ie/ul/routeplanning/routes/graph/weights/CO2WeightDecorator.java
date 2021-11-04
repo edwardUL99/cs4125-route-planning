@@ -1,4 +1,6 @@
-package ie.ul.routeplanning.routes.graph;
+package ie.ul.routeplanning.routes.graph.weights;
+
+import ie.ul.routeplanning.routes.graph.Edge;
 
 /**
  * This class is a decorator for adding CO2 emissions to the weight

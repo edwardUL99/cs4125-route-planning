@@ -3,7 +3,6 @@ package ie.ul.routeplanning.routes;
 import ie.ul.routeplanning.routes.graph.Edge;
 import ie.ul.routeplanning.routes.graph.GraphUtils;
 import ie.ul.routeplanning.parameters.Parameter;
-import ie.ul.routeplanning.routes.graph.WeightFunction;
 import ie.ul.routeplanning.transport.TransportMethod;
 
 import javax.persistence.*;
