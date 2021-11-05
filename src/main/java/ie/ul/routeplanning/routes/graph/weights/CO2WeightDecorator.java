@@ -27,7 +27,7 @@ public class CO2WeightDecorator implements WeightFunction {
      */
     @Override
     public double calculate(Edge edge) {
-        double emissions = edge.getTransportMethod().getCO2EmissionsPerKm();
+        double emissions = (edge.getTransportMethod().getCO2EmissionsPerKm() / 100) * edge.getDistance(); // divide emissions by 100 to create an emissions factor
         return weightFunction.calculate(edge) + emissions;
     }
 }
