@@ -11,7 +11,7 @@ public class TimeWeightDecorator implements WeightFunction {
     /**
      * The weight function that is decorated
      */
-    private WeightFunction weightFunction;
+    private final WeightFunction weightFunction;
 
     /**
      * Create a TimeWeightDecorator wrapping the provided weight function
