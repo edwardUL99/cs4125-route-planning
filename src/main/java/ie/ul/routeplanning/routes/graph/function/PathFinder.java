@@ -3,10 +3,14 @@ package ie.ul.routeplanning.routes.graph.function;
 import ie.ul.routeplanning.routes.Route;
 import ie.ul.routeplanning.routes.RouteLeg;
 import ie.ul.routeplanning.routes.Waypoint;
+import ie.ul.routeplanning.routes.graph.weights.DistanceWeightFunction;
+import ie.ul.routeplanning.routes.graph.Edge;
 import ie.ul.routeplanning.routes.graph.Graph;
+import ie.ul.routeplanning.routes.graph.weights.WeightFunction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class will find all routes from the given point and the end point\
@@ -24,10 +28,24 @@ public class PathFinder {
     private List<Route> routeList = new ArrayList<>();
 
     /**
-     * This constructor initializes the graph object.
+     * The weight function for calculating the weight between edges
+     */
+    private final WeightFunction weightFunction;
+
+    /**
+     * This constructor initializes the path finder with the provided graph and weight function.
+     */
+    public PathFinder(Graph graph, WeightFunction weightFunction) {
+        this.graph = graph;
+        this.weightFunction = weightFunction;
+    }
+
+    /**
+     * Creates a path finder with default weight function
+     * @param graph the graph to initialise the path finder with
      */
     public PathFinder(Graph graph) {
-        this.graph = graph;
+        this(graph, new DistanceWeightFunction());
     }
 
     /**
@@ -38,10 +56,26 @@ public class PathFinder {
      *                      '-1' can mean any number of stops
      */
     public void findRoutes(Waypoint start, Waypoint end, int numberOfStops) {
-        List<RouteLeg> traversedRouteLegs = new ArrayList<>();
+        List<Edge> traversedEdges = new ArrayList<>();
         List<Waypoint> traversedWaypoints = new ArrayList<>();
         List<Route> listOfRoutes = new ArrayList<>();
-        setRouteList(recursive(graph, start, end, numberOfStops, traversedWaypoints, traversedRouteLegs, listOfRoutes));
+        setRouteList(recursive(graph, start, end, numberOfStops, traversedWaypoints, traversedEdges, listOfRoutes));
+    }
+
+    /**
+     * Finds the neighbor of the waypoint passed as argument
+     * @param waypoint the main waypoint.
+     * @return the waypoint connected to the main waypoint.
+     */
+    private Waypoint getNeighbour(Waypoint waypoint, Edge edge) {
+        Waypoint start = edge.getStart();
+        Waypoint end = edge.getEnd();
+        // TODO this method doesn't make sense
+        if (start.equals(waypoint)) {
+            return end;
+        } else {
+            return start;
+        }
     }
 
     /**
@@ -54,36 +88,36 @@ public class PathFinder {
      * @param numberOfStops number of waypoints between the start and end point;
      *                      '-1' can mean any number of stops.
      * @param traversedWaypoints the list of visited waypoints.
-     * @param traversedRouteLegs the list of visited RouteLegs.
+     * @param traversedEdges the list of visited edges.
      * @param listOfRoutes a list of routes, that stores a collection of RouteLegs
      * @return routeList once all RouteLegs have been traversed
      */
     private List<Route> recursive(Graph graph, Waypoint start, Waypoint end, int numberOfStops, List<Waypoint> traversedWaypoints,
-                                           List<RouteLeg> traversedRouteLegs, List<Route> listOfRoutes) {
-
+                                           List<Edge> traversedEdges, List<Route> listOfRoutes) {
         traversedWaypoints.add(start);
         Waypoint next;
 
-        if(numberOfStops != -1 && numberOfStops < traversedRouteLegs.size()) {
+        if (numberOfStops != -1 && numberOfStops < traversedEdges.size()) {
             return listOfRoutes;
         }
 
-        for (RouteLeg routeLeg : graph.getConnections(start)) {
-            next = routeLeg.getNeighbor(start);
+        for (Edge edge : graph.getConnections(start)) {
+            next = getNeighbour(start, edge);
 
             if (traversedWaypoints.contains(next)) {
                 continue;
             }
 
-            traversedRouteLegs.add(routeLeg);
+            traversedEdges.add(edge);
             if (next.equals(end)) {
-                listOfRoutes.add(new Route(traversedRouteLegs));
-                traversedRouteLegs.remove(traversedRouteLegs.size() - 1);
+                List<RouteLeg> legs = traversedEdges.stream().map(RouteLeg::new).collect(Collectors.toList());
+                listOfRoutes.add(new Route(legs));
+                traversedEdges.remove(traversedEdges.size() - 1);
                 continue;
             }
 
-            listOfRoutes = recursive(graph, next, end, numberOfStops, traversedWaypoints, traversedRouteLegs, listOfRoutes);
-            traversedRouteLegs.remove(traversedRouteLegs.size() - 1);
+            listOfRoutes = recursive(graph, next, end, numberOfStops, traversedWaypoints, traversedEdges, listOfRoutes);
+            traversedEdges.remove(traversedEdges.size() - 1);
             traversedWaypoints.remove(traversedWaypoints.size() - 1);
         }
 

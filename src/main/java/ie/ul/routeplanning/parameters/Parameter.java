@@ -12,6 +12,7 @@ import java.util.List;
  * adjusted to be longer or shorter. If adjusted to be shorter, to the Djikstra's algorithm, this route would be
  * preferred. If adjusted to be longer, the algorithm would treat this as the least preferred route
  */
+@Deprecated
 public interface Parameter {
     /**
      * Using the passed in edge, calculate the value that will be added to (positive value) or subtracted from (negative value)

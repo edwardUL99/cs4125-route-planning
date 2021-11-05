@@ -19,7 +19,7 @@ public class Graph {
     /**
      * This holds all the edges for each vertex in the Graph with each vertex mapping to a neighbour
      */
-    private final HashMap<Waypoint, List<RouteLeg>> edges;
+    private final HashMap<Waypoint, List<Edge>> edges;
 
     /**
      * This holds all the waypoints in connection with each waypoint in the Graph with each waypoint mapping to its neighbors.
@@ -76,8 +76,8 @@ public class Graph {
      * @param waypoint the vertex to retrieve edges for
      * @return an unmodifiable list of edges, or null if the vertex is not in the graph
      */
-    public List<RouteLeg> getConnections(Waypoint waypoint) {
-        List<RouteLeg> connections = edges.get(waypoint);
+    public List<Edge> getConnections(Waypoint waypoint) {
+        List<Edge> connections = edges.get(waypoint);
         return (connections == null) ? null:Collections.unmodifiableList(connections);
     }
 
@@ -104,9 +104,9 @@ public class Graph {
      * @param edge the edge with vertex u and v
      * @return true if the graph contains u and v and there is an edge between them
      */
-    public boolean containsEdge(RouteLeg edge) {
+    public boolean containsEdge(Edge edge) {
         Waypoint u = edge.getStart();
-        List<RouteLeg> edges;
+        List<Edge> edges;
         return (edges = this.edges.get(u)) != null && edges.contains(edge);
     }
 
@@ -116,7 +116,7 @@ public class Graph {
      * @param edge the edge to add
      * @param bidirectional true if it is a bidirectional edge, false if not
      */
-    public void addEdge(RouteLeg edge, boolean bidirectional) {
+    public void addEdge(Edge edge, boolean bidirectional) {
         if (!containsEdge(edge)) {
             Waypoint u = edge.getStart(), v = edge.getEnd();
             if (!vertices.containsValue(u))
@@ -128,8 +128,7 @@ public class Graph {
             edges.get(u).add(edge); // v has been added as a neighbour of u, so there is now an edge between them
 
             if (bidirectional) {
-                RouteLeg returnEdge = new RouteLeg(v, u, edge.getTransportMethod(), edge.getDistance());
-                edges.get(v).add(returnEdge);
+                edges.get(v).add(edge.reverse());
             }
         }
     }
@@ -138,7 +137,7 @@ public class Graph {
      * This method adds a bidirectional edge from vertex u to v and then v to u. An edge means that there is a possible connection between u and v
      * @param edge the edge to add
      */
-    public void addEdge(RouteLeg edge) {
+    public void addEdge(Edge edge) {
         addEdge(edge, true);
     }
 

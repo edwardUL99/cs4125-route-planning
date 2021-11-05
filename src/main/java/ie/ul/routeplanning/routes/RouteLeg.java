@@ -1,5 +1,6 @@
 package ie.ul.routeplanning.routes;
 
+import ie.ul.routeplanning.routes.graph.Edge;
 import ie.ul.routeplanning.routes.graph.GraphUtils;
 import ie.ul.routeplanning.parameters.Parameter;
 import ie.ul.routeplanning.transport.TransportMethod;
@@ -17,7 +18,7 @@ import java.util.List;
  * to end. Any waypoints in between to navigate are out of scope of this system.
  */
 @Entity
-public class RouteLeg {
+public class RouteLeg implements Edge {
 	/**
 	 * The id of this routeleg
 	 */
@@ -60,6 +61,14 @@ public class RouteLeg {
 		this.end = end;
 		this.transportMethod = transportMethod;
 		this.distance = distance;
+	}
+
+	/**
+	 * Construct a RouteLeg from the provided edge
+	 * @param edge the edge to construct the route leg from
+	 */
+	public RouteLeg(Edge edge) {
+		this(edge.getStart(), edge.getEnd(), edge.getTransportMethod(), edge.getDistance(), true);
 	}
 
 	/**
@@ -144,20 +153,6 @@ public class RouteLeg {
 	}
 
 	/**
-	 * Finds the neighbor of the waypoint passed as argument
-	 * @param waypoint the main waypoint.
-	 * @return the waypoint connected to the main waypoint.
-	 */
-	public Waypoint getNeighbor(Waypoint waypoint) {
-		if (start.equals(waypoint)) {
-			return end;
-		} else {
-			return start;
-		}
-	}
-
-
-	/**
 	 * Retrieve the transport method used to travel this leg
 	 * @return transport method
 	 */
@@ -174,11 +169,12 @@ public class RouteLeg {
 	}
 
 	/**
-	 * Retrieves the pre-defined distance if any defined
+	 * Retrieves the pre-defined distance if any defined, or kilometre distance based on coordinates if not
 	 * @return pre-defined distance in km
 	 */
+	@Override
 	public Double getDistance() {
-		return distance;
+		return (this.distance == null) ? kilometreDistance():distance;
 	}
 
 	/**
@@ -197,8 +193,13 @@ public class RouteLeg {
 		return calculateDistance(new ArrayList<>());
 	}
 
+	/**
+	 * Calculate the distance with the provided parameters
+	 * @param parameters list of parameters to calculate distance with
+	 * @return calculated distance
+	 */
 	public double calculateDistance(List<Parameter> parameters) {
-		double distance = (this.distance != null) ? this.distance:kilometreDistance();
+		double distance = getDistance();
 
 		for (Parameter parameter : parameters)
 			distance += parameter.adjust(this);
@@ -235,5 +236,15 @@ public class RouteLeg {
 			time += parameter.adjust(this);
 
 		return time;
+	}
+
+	/**
+	 * Returns an edge that is the reverse of this edge, i.e. a bidirectional version
+	 *
+	 * @return the bidirectional version of this edge
+	 */
+	@Override
+	public Edge reverse() {
+		return new RouteLeg(end, start, transportMethod, distance);
 	}
 }
