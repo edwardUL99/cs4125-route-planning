@@ -3,12 +3,14 @@ package ie.ul.routeplanning.services;
 import ie.ul.routeplanning.repositories.UserRepository;
 import ie.ul.routeplanning.users.Role;
 import ie.ul.routeplanning.users.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -21,6 +23,7 @@ public class UserDetailsService implements org.springframework.security.core.use
     /**
      * Our user repository for retrieving users
      */
+    @Autowired
     private UserRepository userRepository;
 
     /**

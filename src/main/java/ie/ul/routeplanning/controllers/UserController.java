@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,18 +36,19 @@ public class UserController {
 
     /**
      * The mapping for registration
+     *
      * @param model the model for registration
      * @return the path to navigate to
      */
     @RequestMapping("/registration")
     public String registration(Model model) {
         if (securityService.isAuthenticated()) {
-            return "redirect:/"; // TODO change
+            return "redirect:/welcome";
         }
 
         model.addAttribute("userForm", new User());
 
-        return "registration"; // TODO implement registration template
+        return "registration";
     }
 
     @RequestMapping(value="/registration", method=RequestMethod.POST)
@@ -60,19 +62,21 @@ public class UserController {
         userService.save(user);
         securityService.autoLogin(user.getUsername(), user.getPassword());
 
-        return "redirect:/welcome"; // TODO implement a welcome page
+        return "redirect:/welcome";
     }
 
     /**
      * Handles the get login functionality. POST login is handled by Spring
-     * @param model the model for the view
-     * @param error null if no error, message if there is
+     *
+     * @param model  the model for the view
+     * @param error  null if no error, message if there is
      * @param logout null if not to logout, other value if you want to logour
      * @return the page to go to
      */
+    @RequestMapping("/login")
     public String login(Model model, String error, String logout) {
         if (securityService.isAuthenticated()) {
-            return "redirect:/"; // TODO change this
+            return "redirect:/welcome";
         }
 
         if (error != null) {
@@ -86,5 +90,8 @@ public class UserController {
         return "login";
     }
 
-    // TODO define the templates and property files at the end of https://hellokoding.com/spring-security-login-logout-thymeleaf/
+    @GetMapping({"/", "/welcome"})
+    public String welcome(Model model) {
+        return "welcome";
+    }
 }

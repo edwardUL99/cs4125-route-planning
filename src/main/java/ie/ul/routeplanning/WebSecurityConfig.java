@@ -34,8 +34,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login") // TODO implement login template
+                .loginPage("/login")
                 .permitAll()
+                .usernameParameter("username").passwordParameter("password")
                 .and()
                 .logout()
                 .permitAll();

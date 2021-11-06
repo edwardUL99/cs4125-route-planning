@@ -43,7 +43,7 @@ public class User {
     /**
      * The set of roles this user is in
      */
-    @ManyToMany
+    @ManyToMany(fetch=FetchType.EAGER)
     private Set<Role> roles;
 
     /**

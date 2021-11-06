@@ -21,7 +21,7 @@ public class Role {
     /**
      * The users in this role
      */
-    @ManyToMany
+    @ManyToMany(fetch=FetchType.EAGER)
     private Set<User> users;
 
     /**
