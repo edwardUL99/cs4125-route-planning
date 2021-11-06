@@ -16,4 +16,9 @@ public interface SecurityService {
      * @param password the user's password
      */
     void autoLogin(String username, String password);
+
+    /**
+     * Bypass authentication for testing purposes
+     */
+    boolean BYPASS_AUTH = System.getProperty("BYPASS_AUTH") != null;
 }

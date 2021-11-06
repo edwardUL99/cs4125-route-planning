@@ -26,6 +26,7 @@ public class SecurityServiceImpl implements SecurityService{
      */
     @Autowired
     private UserDetailsService userDetailsService;
+
     /**
      * This method should return true if authentication has been granted
      *
@@ -33,6 +34,9 @@ public class SecurityServiceImpl implements SecurityService{
      */
     @Override
     public boolean isAuthenticated() {
+        if (BYPASS_AUTH)
+            return true;
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || AnonymousAuthenticationToken.class.isAssignableFrom(authentication.getClass())) {
@@ -51,14 +55,16 @@ public class SecurityServiceImpl implements SecurityService{
      */
     @Override
     public void autoLogin(String username, String password) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+        if (System.getProperty("BYPASS_AUTH") != null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                    new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
 
-        authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+            authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
-        if (usernamePasswordAuthenticationToken.isAuthenticated()) {
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            if (usernamePasswordAuthenticationToken.isAuthenticated()) {
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package ie.ul.routeplanning;
 
+import ie.ul.routeplanning.services.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -29,17 +30,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/css/**", "/js/**", "/registration").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .usernameParameter("username").passwordParameter("password")
-                .and()
-                .logout()
-                .permitAll();
+        if (!SecurityService.BYPASS_AUTH) {
+            http.authorizeRequests()
+                    .antMatchers("/css/**", "/js/**", "/registration").permitAll()
+                    .anyRequest().authenticated()
+                    .and()
+                    .formLogin()
+                    .loginPage("/login")
+                    .permitAll()
+                    .usernameParameter("username").passwordParameter("password")
+                    .and()
+                    .logout()
+                    .permitAll();
+        }
     }
 
     @Bean
