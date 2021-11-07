@@ -3,6 +3,7 @@ package ie.ul.routeplanning.routes.algorithms;
 import ie.ul.routeplanning.routes.Route;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class RouteResult implements Result<Route> {
      * Construct the RouteResult from the provided routes
      * @param routes the list of routes to initialise the result with
      */
-    public RouteResult(List<Route> routes) {
+    public RouteResult(Collection<Route> routes) {
         this.routes = new ArrayList<>(routes);
     }
 
