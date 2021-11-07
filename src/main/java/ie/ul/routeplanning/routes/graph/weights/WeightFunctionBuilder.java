@@ -7,9 +7,14 @@ package ie.ul.routeplanning.routes.graph.weights;
  */
 public class WeightFunctionBuilder {
     /**
+     * The default implementation for the weight function
+     */
+    public static final WeightFunction DEFAULT = new DistanceWeightFunction();
+
+    /**
      * The concrete implementation to use and it is defaulted
      */
-    private WeightFunction weightFunction = new DistanceWeightFunction();
+    private WeightFunction weightFunction = DEFAULT;
 
     /**
      * Determines if emissions wants to be added on to the weights
@@ -58,7 +63,7 @@ public class WeightFunctionBuilder {
     public WeightFunction build() {
         WeightFunction weightFunction = this.weightFunction;
 
-        this.weightFunction = new DistanceWeightFunction(); // reset the builder so it can be re-used
+        this.weightFunction = DEFAULT; // reset the builder so it can be re-used
 
         return weightFunction;
     }
