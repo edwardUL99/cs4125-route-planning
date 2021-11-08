@@ -12,8 +12,6 @@ import java.util.*;
 
 /**
  * An abstract class that is the base of all path finding algorithms.
- *
- * TODO provide some default operations, can be an example of template method too
  */
 public abstract class PathFindingAlgorithm implements Algorithm<Route> {
     /**
@@ -84,7 +82,7 @@ public abstract class PathFindingAlgorithm implements Algorithm<Route> {
     }
 
     /**
-     * Generate the adjacency list for the provided graph
+     * Generate the adjacency list for the provided graph. It also uses the weight function to calculate the nodes cost
      * @param graph the graph to generate the adjacency list for
      * @return adjacency list
      */
@@ -96,8 +94,6 @@ public abstract class PathFindingAlgorithm implements Algorithm<Route> {
             adjacencyList.put(vertex, adjacentNodes);
 
             for (Edge edge : graph.getNeighbours(vertex)) {
-                // TODO remove neighbours and rename getNeighbours to getNeighbours
-                assert edge.getStart().equals(vertex); // TODO remove this when not needed
                 adjacentNodes.add(new Node(edge.getEnd(), weightFunction.calculate(edge), edge.getDistance(), edge.getTransportMethod())); // use the weight function to calculate the weight/cost
             }
         }

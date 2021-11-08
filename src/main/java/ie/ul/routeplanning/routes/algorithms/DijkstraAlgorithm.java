@@ -11,8 +11,6 @@ import java.util.*;
 /**
  * This class represents the Dijkstra's shortest path algorithm for finding the shortest path based on the provided weight
  * function
- *
- * TODO currently doesn't return the shortest route
  */
 public class DijkstraAlgorithm extends PathFindingAlgorithm {
     /**

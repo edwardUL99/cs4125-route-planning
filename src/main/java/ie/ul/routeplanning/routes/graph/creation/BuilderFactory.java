@@ -5,7 +5,7 @@ import ie.ul.routeplanning.routes.data.WaypointSource;
 import java.io.File;
 
 /**
- * This factory provides a means of creating GraphBuilders, TODO can be counted as added value
+ * This factory provides a means of creating GraphBuilders
  */
 public final class BuilderFactory {
     /**
