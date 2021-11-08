@@ -4,6 +4,7 @@ import ie.ul.routeplanning.constants.Constant;
 import ie.ul.routeplanning.repositories.RouteRepository;
 import ie.ul.routeplanning.repositories.WaypointRepository;
 import ie.ul.routeplanning.routes.Route;
+import ie.ul.routeplanning.routes.RouteGenerator;
 import ie.ul.routeplanning.routes.Waypoint;
 import ie.ul.routeplanning.routes.algorithms.*;
 import ie.ul.routeplanning.routes.data.SourceFactory;
@@ -99,13 +100,9 @@ public class RouteController {
             Waypoint start = startOpt.get();
             Waypoint end = endOpt.get();
 
-            // TODO need to find the next K shortest routes after dijkstra's suggestion
-            WeightFunction weightFunction = new WeightFunctionBuilder()
-                    .withEmissions(ecoFriendly)
-                    .build();
-            Algorithm<Route> dijkstra = AlgorithmFactory.dijkstraAlgorithm(start, end, weightFunction);
-            Result<Route> result = dijkstra.perform(getGraph());
-            List<Route> routes = result.collect();
+            List<Route> routes = RouteGenerator.generateRoutes(getGraph(), start, end, ecoFriendly);
+
+            // TODO in the routes.html add a section for shortest and then another section for the next shorter ones
 
             routeRepository.saveAll(routes);
 
