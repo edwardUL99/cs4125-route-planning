@@ -10,6 +10,7 @@ import ie.ul.routeplanning.routes.data.SourceFactory;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.routes.graph.creation.BuilderException;
 import ie.ul.routeplanning.routes.graph.creation.BuilderFactory;
+import ie.ul.routeplanning.routes.graph.weights.WeightFunction;
 import ie.ul.routeplanning.routes.graph.weights.WeightFunctionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -83,23 +84,29 @@ public class RouteController {
         startWaypoint = Constant.capitalise(startWaypoint);
         endWaypoint = Constant.capitalise(endWaypoint);
 
-        Optional<Waypoint> start = findWaypoint(startWaypoint); //waypointFinder.matchWaypoint(startWaypoint);
-        Optional<Waypoint> end = findWaypoint(endWaypoint); //waypointFinder.matchWaypoint(endWaypoint);
+        Optional<Waypoint> startOpt = findWaypoint(startWaypoint); //waypointFinder.matchWaypoint(startWaypoint);
+        Optional<Waypoint> endOpt = findWaypoint(endWaypoint); //waypointFinder.matchWaypoint(endWaypoint);
 
         model.addAttribute("startWaypoint", startWaypoint);
         model.addAttribute("endWaypoint", endWaypoint);
         model.addAttribute("ecoFriendly", ecoFriendly);
 
-        if (start.equals(end)) {
+        if (startWaypoint.equals(endWaypoint)) {
             model.addAttribute("error", "You cannot create a route with the same start and end waypoints");
-        } else if (!start.isPresent()) {
+        } else if (!startOpt.isPresent()) {
             model.addAttribute("error", String.format("No start waypoint found with name %s", startWaypoint));
-        } else if (!end.isPresent()) {
+        } else if (!endOpt.isPresent()) {
             model.addAttribute("error", String.format("No end waypoint found with name %s", endWaypoint));
         } else {
+            Waypoint start = startOpt.get();
+            Waypoint end = endOpt.get();
+
             // TODO need to find the next K shortest routes after dijkstra's suggestion
-            Algorithm<Route> algorithm = new DijkstraAlgorithm(start.get(), end.get(), new WeightFunctionBuilder().withEmissions(ecoFriendly).build());
-            Result<Route> result = algorithm.perform(getGraph());
+            WeightFunction weightFunction = new WeightFunctionBuilder()
+                    .withEmissions(ecoFriendly)
+                    .build();
+            Algorithm<Route> dijkstra = AlgorithmFactory.dijkstraAlgorithm(start, end, weightFunction);
+            Result<Route> result = dijkstra.perform(getGraph());
             List<Route> routes = result.collect();
 
             routeRepository.saveAll(routes);

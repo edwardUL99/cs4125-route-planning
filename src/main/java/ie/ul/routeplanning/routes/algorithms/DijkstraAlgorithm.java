@@ -59,7 +59,7 @@ public class DijkstraAlgorithm extends PathFindingAlgorithm {
         RouteLeg routeLeg = new RouteLeg();
         routeLeg.setStart(start);
 
-        if (pathSize == 2) {
+        if (pathSize == 2) { // here, we only have one leg in the route, so construct the route leg from it
             Node node = path.get(1);
             setRouteLegFromNode(node, routeLeg);
             converted.addRouteLeg(routeLeg);
@@ -117,9 +117,9 @@ public class DijkstraAlgorithm extends PathFindingAlgorithm {
             Waypoint u = node.node;
             double uDist = distances.get(u);
 
-            if (u.equals(end) && (target == null)) { // || node.cost < target.cost)) {
+            if (u.equals(end)) { // || node.cost < target.cost)) {
                 target = node;
-                //break;
+                break; // we found our end node. Since Dijkstra's always follows the shortest path, we can break after the end is reached
             }
 
             if (node.cost > uDist)
@@ -127,7 +127,7 @@ public class DijkstraAlgorithm extends PathFindingAlgorithm {
 
             visited.add(u);
 
-            double edgeDistance = -1, newDistance = -1;
+            double edgeDistance, newDistance;
 
             List<Node> adjacentNodes = adjacencyList.get(u);
 
@@ -162,7 +162,7 @@ public class DijkstraAlgorithm extends PathFindingAlgorithm {
         Set<Waypoint> visited = new HashSet<>();
         PriorityQueue<Node> priorityQueue = new PriorityQueue<>(vertices, new Node());
 
-        adjacencyList.keySet().forEach(k -> distances.put(k, Double.MAX_VALUE));
+        adjacencyList.keySet().forEach(k -> distances.put(k, Double.MAX_VALUE)); // initialise the distances to infinity
 
         priorityQueue.add(new Node(start, 0, 0, null)); // no cost to travel to start
         distances.put(start, 0.0);
