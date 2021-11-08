@@ -15,17 +15,11 @@ public class Graph {
     /**
      * Mapping of the waypoint id to the corresponding waypoint
      */
-    private final HashMap<Long, Waypoint> vertices;
+    private final Map<Long, Waypoint> vertices;
     /**
      * This holds all the edges for each vertex in the Graph with each vertex mapping to a neighbour
      */
-    private final HashMap<Waypoint, List<Edge>> edges;
-
-    /**
-     * This holds all the waypoints in connection with each waypoint in the Graph with each waypoint mapping to its neighbors.
-     * TODO remove this as it is unnecessary
-     */
-    private final HashMap<Waypoint, List<Waypoint>> neighbors;
+    private final Map<Waypoint, List<Edge>> edges;
 
     /**
      * Constructs an empty Graph with no vertices and edges
@@ -33,7 +27,16 @@ public class Graph {
     public Graph() {
         vertices = new HashMap<>();
         edges = new HashMap<>();
-        neighbors = new HashMap<>();
+    }
+
+    /**
+     * A copy constructor to help facilitate the copy method
+     * @param vertices the list of vertices to copy over
+     * @param edges the list of edges to copy over
+     */
+    private Graph(Map<Long, Waypoint> vertices, Map<Waypoint, List<Edge>> edges) {
+        this.vertices = vertices;
+        this.edges = edges;
     }
 
     /**
@@ -76,27 +79,8 @@ public class Graph {
      * @param waypoint the vertex to retrieve edges for
      * @return an unmodifiable list of edges, or null if the vertex is not in the graph
      */
-    public List<Edge> getConnections(Waypoint waypoint) {
-        List<Edge> connections = edges.get(waypoint);
-        return (connections == null) ? null:Collections.unmodifiableList(connections);
-    }
-
-    /**
-     * The neighbor is appended to the list corresponding to the waypoint
-     * @param waypoint the waypoint to which the neighboring waypoint has to be added
-     * @param neighbor the adjacent waypoint to the 'waypoint'
-     */
-    public void addNeighbor(Waypoint waypoint, Waypoint neighbor) {
-        neighbors.get(waypoint).add(neighbor);
-    }
-
-    /**
-     * Retrieve the edges for the provided vertex
-     * @param waypoint the vertex to retrieve edges for
-     * @return an unmodifiable list of edges, or null if the vertex is not in the graph
-     */
-    public List<Waypoint> getNeighbors(Waypoint waypoint) {
-        return (waypoint == null) ? null:neighbors.get(waypoint);
+    public List<Edge> getNeighbours(Waypoint waypoint) {
+        return edges.get(waypoint);
     }
 
     /**
@@ -141,6 +125,38 @@ public class Graph {
         addEdge(edge, true);
     }
 
+    /**
+     * Creates a deep copy of this graph
+     * @return the copied graph
+     */
+    public Graph copy() {
+        Map<Long, Waypoint> vertices = new HashMap<>(this.vertices.size());
+        Map<Waypoint, List<Edge>> edges = new HashMap<>(this.edges.size());
+
+        for (Map.Entry<Long, Waypoint> e : this.vertices.entrySet()) {
+            Long id = e.getKey();
+            Waypoint vertex = e.getValue();
+
+            vertices.put(id, new Waypoint(vertex.getId(), vertex.getName(), vertex.getLatitude(), vertex.getLongitude()));
+        }
+
+        for (Map.Entry<Waypoint, List<Edge>> e : this.edges.entrySet()) {
+            Waypoint key = e.getKey();
+            List<Edge> edgeList = e.getValue();
+
+            Waypoint copied = vertices.get(key.getId());
+
+            List<Edge> copiedEdges = new ArrayList<>();
+
+            for (Edge edge : edgeList) {
+                copiedEdges.add(new RouteLeg(edge));
+            }
+
+            edges.put(copied, copiedEdges);
+        }
+
+        return new Graph(vertices, edges); // use the copy constructor
+    }
 
     /**
      * Returns a string representation of the object.

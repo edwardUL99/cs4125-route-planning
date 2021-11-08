@@ -8,6 +8,7 @@ import ie.ul.routeplanning.transport.TransportMethod;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A RouteLeg is a leg of a route with 2 waypoints representing the start of the leg and the end of it. It is also
@@ -28,12 +29,12 @@ public class RouteLeg implements Edge {
 	/**
 	 * The start of the RouteLeg
 	 */
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(cascade=CascadeType.MERGE)
 	private Waypoint start;
 	/**
 	 * The end of the RouteLeg
 	 */
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(cascade=CascadeType.MERGE)
 	private Waypoint end;
 	/**
 	 * The name of the transport method taking this leg of the route
@@ -46,29 +47,11 @@ public class RouteLeg implements Edge {
 	private Double distance;
 
 	/**
-	 * Constructs a RouteLeg with the provided start and end waypoints and the transport method and pre-defined distance
-	 * @param start the waypoint indicating the start of the leg
-	 * @param end the waypoint indicating the end of the leg
-	 * @param transportMethod the method of transport used to travel this leg
-	 * @param distance the predefined distance for this route leg
-	 * @param validateWaypoints true if waypoint should be validated, false if not
-	 */
-	private RouteLeg(Waypoint start, Waypoint end, TransportMethod transportMethod, Double distance, boolean validateWaypoints) {
-		if (validateWaypoints)
-			validateWaypoints(start, end);
-
-		this.start = start;
-		this.end = end;
-		this.transportMethod = transportMethod;
-		this.distance = distance;
-	}
-
-	/**
 	 * Construct a RouteLeg from the provided edge
 	 * @param edge the edge to construct the route leg from
 	 */
 	public RouteLeg(Edge edge) {
-		this(edge.getStart(), edge.getEnd(), edge.getTransportMethod(), edge.getDistance(), true);
+		this(edge.getStart(), edge.getEnd(), edge.getTransportMethod(), edge.getDistance());
 	}
 
 	/**
@@ -80,14 +63,17 @@ public class RouteLeg implements Edge {
 	 * @param distance the predefined distance for this route leg
 	 */
 	public RouteLeg(Waypoint start, Waypoint end, TransportMethod transportMethod, Double distance) {
-		this(start, end, transportMethod, distance, true);
+		this.start = start;
+		this.end = end;
+		this.transportMethod = transportMethod;
+		this.distance = distance;
 	}
 
 	/**
 	 * Default constructor as required for Entity
 	 */
 	public RouteLeg() {
-		this(null, null, null, null, false);
+		this(null, null, null, null);
 	}
 
 	/**
@@ -110,27 +96,11 @@ public class RouteLeg implements Edge {
 	}
 
 	/**
-	 * Checks if the waypoints are valid before setting them
-	 * @param start the waypoint that will be the start waypoint
-	 * @param end the waypoint that will be the end waypoint
-	 */
-	private void validateWaypoints(Waypoint start, Waypoint end) {
-		if (start == null) {
-			throw new IllegalStateException("A RouteLeg cannot have a null start Waypoint");
-		} else if (end == null) {
-			throw new IllegalStateException("A RouteLeg cannot have a null end Waypoint");
-		} else if (start.isSameAs(end)) {
-			throw new IllegalStateException("A RouteLeg cannot start and end with the same Waypoint");
-		}
-	}
-
-	/**
 	 * Sets the start waypoint of this route leg
 	 * Pre-conditions: The waypoint must not be equal to the end waypoint and not be null
 	 * @param start the new start waypoint
 	 */
 	public void setStart(Waypoint start) {
-		validateWaypoints(start, end);
 		this.start = start;
 	}
 
@@ -148,7 +118,6 @@ public class RouteLeg implements Edge {
 	 * @param end the end waypoint
 	 */
 	public void setEnd(Waypoint end) {
-		validateWaypoints(start, end);
 		this.end = end;
 	}
 
@@ -246,5 +215,31 @@ public class RouteLeg implements Edge {
 	@Override
 	public Edge reverse() {
 		return new RouteLeg(end, start, transportMethod, distance);
+	}
+
+	/**
+	 * Check if this leg equals the provided object
+	 * @param o the object to check
+	 * @return true if equal, false if not
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		RouteLeg routeLeg = (RouteLeg) o;
+		return Objects.equals(id, routeLeg.id) &&
+				Objects.equals(start, routeLeg.start) &&
+				Objects.equals(end, routeLeg.end) &&
+				Objects.equals(transportMethod, routeLeg.transportMethod) &&
+				Objects.equals(distance, routeLeg.distance);
+	}
+
+	/**
+	 * Generate a hash code for this route leg
+	 * @return the generated hashcode
+	 */
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, start, end, transportMethod, distance);
 	}
 }

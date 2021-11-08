@@ -35,15 +35,21 @@ public class RouteResult implements Result<Route> {
     }
 
     /**
-     * Collect all the elements in this result into a single list
-     * This operation should end in the result having no more elements
-     *
+     * Collect all the remaining elements in this result into a single list.
+     * I.e. if 3 items have already been taken using next(), the elements returned should only be the remaining elements,
+     * excluding those 3. If no elements are available, this returns an empty list
+     * This operation should end in the result having no more elements.
      * @return the list of all elements in the result.
      */
     @Override
     public List<Route> collect() {
-        this.position = this.routes.size();
-        return new ArrayList<>(this.routes);
+        List<Route> routes = new ArrayList<>();
+
+        for (int i = this.position; i < this.routes.size(); i++, this.position++) {
+            routes.add(this.routes.get(i));
+        }
+
+        return routes;
     }
 
     /**
