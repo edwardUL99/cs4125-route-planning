@@ -1,7 +1,6 @@
 package ie.ul.routeplanning.routes.algorithms;
 
 import ie.ul.routeplanning.routes.Route;
-import ie.ul.routeplanning.routes.RouteLeg;
 import ie.ul.routeplanning.routes.Waypoint;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.routes.graph.weights.WeightFunction;
@@ -31,69 +30,6 @@ public class DijkstraAlgorithm extends PathFindingAlgorithm {
      */
     public DijkstraAlgorithm(Waypoint start, Waypoint end) {
         super(start, end);
-    }
-
-    /**
-     * Sets the route legs information from the node
-     * @param node the node to retrieve info from
-     * @param routeLeg the route leg to set information on
-     */
-    private void setRouteLegFromNode(Node node, RouteLeg routeLeg) {
-        routeLeg.setEnd(node.node);
-        routeLeg.setDistance(node.distance);
-        routeLeg.setTransportMethod(node.transportMethod);
-    }
-
-    /**
-     * Convert the provided path to a route
-     * @param path the path to convert
-     * @return the converted path
-     */
-    private Route convertPathToRoute(List<Node> path) {
-        Route converted = new Route();
-
-        int pathSize = path.size();
-
-        RouteLeg routeLeg = new RouteLeg();
-        routeLeg.setStart(start);
-
-        if (pathSize == 2) { // here, we only have one leg in the route, so construct the route leg from it
-            Node node = path.get(1);
-            setRouteLegFromNode(node, routeLeg);
-            converted.addRouteLeg(routeLeg);
-        } else if (pathSize > 1) {
-            for (int i = 1; i < pathSize - 1; i++) {
-                Node node = path.get(i);
-                if (routeLeg.getStart() != null) {
-                    setRouteLegFromNode(node, routeLeg);
-                    converted.addRouteLeg(routeLeg);
-                    routeLeg = new RouteLeg();
-
-                }
-                routeLeg.setStart(node.node);
-                node = path.get(i + 1);
-                setRouteLegFromNode(node, routeLeg);
-                converted.addRouteLeg(routeLeg);
-
-                routeLeg = new RouteLeg();
-            }
-        }
-
-        return converted;
-    }
-
-    /**
-     * Construct the target node path from the given target
-     * @param target the target node which should represent the end waypoint
-     * @return the list representing the path
-     */
-    private List<Node> constructPath(Node target) {
-        List<Node> path = new ArrayList<>(); // the list that will trace the path
-
-        for (Node node = target; node != null; node = node.parent)
-            path.add(0, node);
-
-        return path;
     }
 
     /**
@@ -143,9 +79,13 @@ public class DijkstraAlgorithm extends PathFindingAlgorithm {
             }
         }
 
-        List<Node> path = constructPath(target);
+        if (target != null) {
+            List<Node> path = constructPath(target);
 
-        return convertPathToRoute(path);
+            return convertPathToRoute(path);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -177,7 +117,11 @@ public class DijkstraAlgorithm extends PathFindingAlgorithm {
     @Override
     public Result<Route> perform(Graph graph) {
         RouteResult routeResult = new RouteResult();
-        routeResult.addItem(generateRoute(graph));
+        Route route = generateRoute(graph);
+
+        if (route != null)
+            routeResult.addItem(route);
+
         return routeResult;
     }
 }

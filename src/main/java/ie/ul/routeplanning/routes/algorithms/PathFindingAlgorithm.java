@@ -1,6 +1,7 @@
 package ie.ul.routeplanning.routes.algorithms;
 
 import ie.ul.routeplanning.routes.Route;
+import ie.ul.routeplanning.routes.RouteLeg;
 import ie.ul.routeplanning.routes.Waypoint;
 import ie.ul.routeplanning.routes.graph.Edge;
 import ie.ul.routeplanning.routes.graph.Graph;
@@ -93,12 +94,77 @@ public abstract class PathFindingAlgorithm implements Algorithm<Route> {
             List<Node> adjacentNodes = new ArrayList<>();
             adjacencyList.put(vertex, adjacentNodes);
 
-            for (Edge edge : graph.getNeighbours(vertex)) {
-                adjacentNodes.add(new Node(edge.getEnd(), weightFunction.calculate(edge), edge.getDistance(), edge.getTransportMethod())); // use the weight function to calculate the weight/cost
-            }
+            // for each neighbour of this vertex create a node for it
+            graph.getNeighbours(vertex)
+                    .stream()
+                    .map(Node::new)
+                    .forEach(adjacentNodes::add);
         }
 
         return adjacencyList;
+    }
+
+    /**
+     * Sets the route legs information from the node
+     * @param node the node to retrieve info from
+     * @param routeLeg the route leg to set information on
+     */
+    protected void setRouteLegFromNode(Node node, RouteLeg routeLeg) {
+        routeLeg.setEnd(node.node);
+        routeLeg.setDistance(node.distance);
+        routeLeg.setTransportMethod(node.transportMethod);
+    }
+
+    /**
+     * Convert the provided path to a route
+     * @param path the path to convert
+     * @return the converted path
+     */
+    protected Route convertPathToRoute(List<Node> path) {
+        Route converted = new Route();
+
+        int pathSize = path.size();
+
+        RouteLeg routeLeg = new RouteLeg();
+        routeLeg.setStart(start);
+
+        if (pathSize == 2) { // here, we only have one leg in the route, so construct the route leg from it
+            Node node = path.get(1);
+            setRouteLegFromNode(node, routeLeg);
+            converted.addRouteLeg(routeLeg);
+        } else if (pathSize > 1) {
+            for (int i = 1; i < pathSize - 1; i++) {
+                Node node = path.get(i);
+                if (routeLeg.getStart() != null) {
+                    setRouteLegFromNode(node, routeLeg);
+                    converted.addRouteLeg(routeLeg);
+                    routeLeg = new RouteLeg();
+
+                }
+                routeLeg.setStart(node.node);
+                node = path.get(i + 1);
+                setRouteLegFromNode(node, routeLeg);
+                converted.addRouteLeg(routeLeg);
+
+                routeLeg = new RouteLeg();
+            }
+        }
+
+        return converted;
+    }
+
+    /**
+     * Construct the target node path from the given target
+     * @param target the target node which should represent the end waypoint
+     * @return the list representing the path
+     */
+    protected List<Node> constructPath(Node target) {
+        List<Node> path = new ArrayList<>(); // the list that will trace the path
+
+        for (Node node = target; node != null; node = node.parent)
+            path.add(0, node);
+
+        return path;
     }
 
     /**
@@ -113,7 +179,7 @@ public abstract class PathFindingAlgorithm implements Algorithm<Route> {
     /**
      * A node for path finding
      */
-    protected static class Node implements Comparator<Node> {
+    protected class Node implements Comparator<Node> {
         /**
          * The waypoint node behind this priority queue node
          */
@@ -139,6 +205,14 @@ public abstract class PathFindingAlgorithm implements Algorithm<Route> {
          * An empty constructor to allow default initialization
          */
         protected Node() { }
+
+        /**
+         * Constructs the node from the provided edge, using the PathFindingAlgorithm's weight function to calculate the cost
+         * @param edge the edge to calculate the cost from
+         */
+        protected Node(Edge edge) {
+            this(edge.getEnd(), weightFunction.calculate(edge), edge.getDistance(), edge.getTransportMethod());
+        }
 
         /**
          * Construct a Node with the provided backing waypoint and the calculated cost

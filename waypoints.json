@@ -22,5 +22,11 @@
 		"name": "Waterford",
 		"latitude": 2000.0,
 		"longitude": 1800.0
+	},
+	{
+		"id": 5,
+		"name": "London",
+		"latitude": 3500.0,
+		"longitude": 1000.0
 	}
 ]
