@@ -2,12 +2,9 @@ package ie.ul.routeplanning.routes;
 
 import ie.ul.routeplanning.routes.graph.Edge;
 import ie.ul.routeplanning.routes.graph.GraphUtils;
-import ie.ul.routeplanning.parameters.Parameter;
 import ie.ul.routeplanning.transport.TransportMethod;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -159,21 +156,7 @@ public class RouteLeg implements Edge {
 	 * @return the distance as a double
 	 */
 	public double calculateDistance() {
-		return calculateDistance(new ArrayList<>());
-	}
-
-	/**
-	 * Calculate the distance with the provided parameters
-	 * @param parameters list of parameters to calculate distance with
-	 * @return calculated distance
-	 */
-	public double calculateDistance(List<Parameter> parameters) {
-		double distance = getDistance();
-
-		for (Parameter parameter : parameters)
-			distance += parameter.adjust(this);
-
-		return distance;
+		return getDistance();
 	}
 
 	/**
@@ -189,20 +172,8 @@ public class RouteLeg implements Edge {
 	 * @return the time as a double
 	 */
 	public double calculateTime() {
-		return calculateTime(new ArrayList<>());
-	}
-
-	/**
-	 * Calculate the time for this RouteLeg using the parameters to adjust the time if necessary
-	 * @param parameters any parameters to adjust the resulting time parameter
-	 * @return the calculated time as a double
-	 */
-	public double calculateTime(List<Parameter> parameters) {
 		double time = 0;
-		//TODO: Calculate the time
-
-		for (Parameter parameter : parameters)
-			time += parameter.adjust(this);
+		// TODO calculate the time
 
 		return time;
 	}
