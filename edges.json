@@ -53,5 +53,23 @@
 		"end": 4,
 		"transportMethod": "Train",
 		"distance": 350.00
+	},
+	{
+		"start": 2,
+		"end": 3,
+		"transportMethod": "Plane",
+		"distance": 100.00
+	},
+	{
+		"start": 2,
+		"end": 3,
+		"transportMethod": "Train",
+		"distance": 110.00
+	},
+	{
+		"start": 3,
+		"end": 1,
+		"transportMethod": "Car",
+		"distance": 50.00
 	}
 ]

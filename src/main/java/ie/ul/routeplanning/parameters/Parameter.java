@@ -2,8 +2,6 @@ package ie.ul.routeplanning.parameters;
 
 import ie.ul.routeplanning.routes.RouteLeg;
 
-import java.util.List;
-
 /**
  * An interface that represents a parameter. A parameter works when calculating the edges of a graph by generating a
  * value that adjusts the weight.

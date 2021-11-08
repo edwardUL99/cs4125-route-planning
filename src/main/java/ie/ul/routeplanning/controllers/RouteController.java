@@ -5,11 +5,12 @@ import ie.ul.routeplanning.repositories.RouteRepository;
 import ie.ul.routeplanning.repositories.WaypointRepository;
 import ie.ul.routeplanning.routes.Route;
 import ie.ul.routeplanning.routes.Waypoint;
+import ie.ul.routeplanning.routes.algorithms.*;
 import ie.ul.routeplanning.routes.data.SourceFactory;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.routes.graph.creation.BuilderException;
 import ie.ul.routeplanning.routes.graph.creation.BuilderFactory;
-import ie.ul.routeplanning.routes.graph.function.PathFinder;
+import ie.ul.routeplanning.routes.graph.weights.WeightFunctionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,22 +41,13 @@ public class RouteController {
     private RouteRepository routeRepository;
 
     /**
-     * The graph instance for the route controller
-     */
-    private Graph graph;
-
-    /**
      * Lazily initialises the graph
      * @throws BuilderException if an exception occurs building the graph
      */
     private Graph getGraph() throws BuilderException {
-        if (graph == null) {
-            List<Waypoint> waypoints = new ArrayList<>();
-            waypointRepository.findAll().forEach(waypoints::add);
-            graph = BuilderFactory.fromFile("edges.json", SourceFactory.fromList(waypoints)).buildGraph();
-        }
-
-        return graph;
+        List<Waypoint> waypoints = new ArrayList<>();
+        waypointRepository.findAll().forEach(waypoints::add);
+        return BuilderFactory.fromFile("edges.json", SourceFactory.fromList(waypoints)).buildGraph();
     }
 
     /**
@@ -105,10 +97,11 @@ public class RouteController {
         } else if (!end.isPresent()) {
             model.addAttribute("error", String.format("No end waypoint found with name %s", endWaypoint));
         } else {
-            PathFinder pathFinder = new PathFinder(getGraph());
-            pathFinder.findRoutes(start.get(), end.get(), -1);
+            // TODO need to find the next K shortest routes after dijkstra's suggestion
+            Algorithm<Route> algorithm = new DijkstraAlgorithm(start.get(), end.get(), new WeightFunctionBuilder().withEmissions(ecoFriendly).build());
+            Result<Route> result = algorithm.perform(getGraph());
+            List<Route> routes = result.collect();
 
-            List<Route> routes = pathFinder.getRouteList();
             routeRepository.saveAll(routes);
 
             model.addAttribute("routes", routes);
