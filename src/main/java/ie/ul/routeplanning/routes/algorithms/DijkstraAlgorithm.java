@@ -46,12 +46,12 @@ public class DijkstraAlgorithm extends PathFindingAlgorithm {
 
         Node target = null;
 
-        while (visited.size() != vertices) {
+        while (visited.size() != vertices && !priorityQueue.isEmpty()) {
             Node node = priorityQueue.remove();
             Waypoint u = node.node;
             double uDist = distances.get(u);
 
-            if (u.equals(end)) { // || node.cost < target.cost)) {
+            if (u.equals(end)) {
                 target = node;
                 break; // we found our end node. Since Dijkstra's always follows the shortest path, we can break after the end is reached
             }
@@ -93,7 +93,7 @@ public class DijkstraAlgorithm extends PathFindingAlgorithm {
      * @param graph the graph to use for route generation
      * @return the generated route
      */
-    private Route generateRoute(Graph graph) {
+    protected Route dijkstra(Graph graph) {
         Map<Waypoint, List<Node>> adjacencyList = generateAdjacencyList(graph);
         int vertices = adjacencyList.size(); // the number of vertices in the graph
         Map<Waypoint, Double> distances = new HashMap<>();
@@ -117,7 +117,7 @@ public class DijkstraAlgorithm extends PathFindingAlgorithm {
     @Override
     public Result<Route> perform(Graph graph) {
         RouteResult routeResult = new RouteResult();
-        Route route = generateRoute(graph);
+        Route route = dijkstra(graph);
 
         if (route != null)
             routeResult.addItem(route);

@@ -5,19 +5,19 @@ import ie.ul.routeplanning.repositories.RouteRepository;
 import ie.ul.routeplanning.repositories.WaypointRepository;
 import ie.ul.routeplanning.routes.Route;
 import ie.ul.routeplanning.routes.Waypoint;
-import ie.ul.routeplanning.routes.algorithms.*;
 import ie.ul.routeplanning.routes.data.SourceFactory;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.routes.graph.creation.BuilderException;
 import ie.ul.routeplanning.routes.graph.creation.BuilderFactory;
-import ie.ul.routeplanning.routes.graph.weights.WeightFunction;
-import ie.ul.routeplanning.routes.graph.weights.WeightFunctionBuilder;
+import ie.ul.routeplanning.services.RouteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +38,12 @@ public class RouteController {
      */
     @Autowired
     private RouteRepository routeRepository;
+
+    /**
+     * Our route service for generating routes
+     */
+    @Autowired
+    private RouteService routeService;
 
     /**
      * Lazily initialises the graph
@@ -70,65 +76,57 @@ public class RouteController {
 
     /**
      * The handler for when route generation is requested
-     * @param model the model for the view
      * @param startWaypoint the name of the start waypoint
      * @param endWaypoint the name of the end waypoint
      * @param ecoFriendly true if the routes are to be filtered by eco friendliness
      * @return the name of the view
      */
     @RequestMapping(value="/routes", method=RequestMethod.POST)
-    public String generateRoutes(Model model, @RequestParam String startWaypoint, @RequestParam String endWaypoint,
+    public ModelAndView generateRoutes(RedirectAttributes redirectAttributes, @RequestParam String startWaypoint, @RequestParam String endWaypoint,
                                        @RequestParam(required=false) boolean ecoFriendly) throws BuilderException {
-        startWaypoint = Constant.capitalise(startWaypoint);
-        endWaypoint = Constant.capitalise(endWaypoint);
+        RouteService.RouteParameters parameters = routeService.parseParameters(startWaypoint, endWaypoint);
 
-        Optional<Waypoint> startOpt = findWaypoint(startWaypoint); //waypointFinder.matchWaypoint(startWaypoint);
-        Optional<Waypoint> endOpt = findWaypoint(endWaypoint); //waypointFinder.matchWaypoint(endWaypoint);
+        redirectAttributes.addFlashAttribute("startWaypoint", startWaypoint);
+        redirectAttributes.addFlashAttribute("endWaypoint", endWaypoint);
+        redirectAttributes.addFlashAttribute("ecoFriendly", ecoFriendly);
 
-        model.addAttribute("startWaypoint", startWaypoint);
-        model.addAttribute("endWaypoint", endWaypoint);
-        model.addAttribute("ecoFriendly", ecoFriendly);
+        ModelAndView modelAndView = new ModelAndView();
 
-        if (startWaypoint.equals(endWaypoint)) {
-            model.addAttribute("error", "You cannot create a route with the same start and end waypoints");
-        } else if (!startOpt.isPresent()) {
-            model.addAttribute("error", String.format("No start waypoint found with name %s", startWaypoint));
-        } else if (!endOpt.isPresent()) {
-            model.addAttribute("error", String.format("No end waypoint found with name %s", endWaypoint));
-        } else {
-            Waypoint start = startOpt.get();
-            Waypoint end = endOpt.get();
+        if (parameters.isValid()) {
+            Waypoint start = parameters.getStart();
+            Waypoint end = parameters.getEnd();
 
-            // TODO need to find the next K shortest routes after dijkstra's suggestion
-            WeightFunction weightFunction = new WeightFunctionBuilder()
-                    .withEmissions(ecoFriendly)
-                    .build();
-            Algorithm<Route> dijkstra = AlgorithmFactory.dijkstraAlgorithm(start, end, weightFunction);
-            Result<Route> result = dijkstra.perform(getGraph());
-            List<Route> routes = result.collect();
+            List<Route> routes = routeService.generateRoutes(getGraph(), start, end, ecoFriendly);
 
             routeRepository.saveAll(routes);
 
-            model.addAttribute("routes", routes);
+            Route bestRoute = (routes.size() == 0) ? null:routes.remove(0);
+
+            redirectAttributes.addFlashAttribute("bestRoute", bestRoute);
+            redirectAttributes.addFlashAttribute("routes", routes);
+
+            modelAndView.setViewName("redirect:/routes/generated");
+        } else {
+            redirectAttributes.addFlashAttribute("error", parameters.getError());
+            modelAndView.setViewName("redirect:/routes");
         }
 
-        return "routes";
+        return modelAndView;
     }
 
     /**
-     * A get request to redirect from post request for route generation
+     * Views the generated routes
+     * @param model the model for holding the attributes
      * @return the name of the view
      */
-    @RequestMapping(value="/routes/generated", method=RequestMethod.GET)
-    public String viewGeneratedRoutes(Model model, @ModelAttribute("startWaypoint") String startWaypoint,
-                                      @ModelAttribute("endWaypoint") String endWaypoint,
-                                      @ModelAttribute("routes") List<Route> routes,
-                                      @ModelAttribute("ecoFriendly") boolean ecoFriendly) {
-        model.addAttribute("startWaypoint", startWaypoint);
-        model.addAttribute("endWaypoint", endWaypoint);
-        model.addAttribute("routes", routes);
-        model.addAttribute("ecoFriendly", ecoFriendly);
-        return "routes";
+    @RequestMapping("/routes/generated")
+    public String viewGeneratedRoutes(Model model, HttpServletResponse response) {
+        if (model.asMap().size() == 0) {
+            return "redirect:/routes";
+        } else {
+            response.addHeader("Cache-Control", "Public");
+            return "routes";
+        }
     }
 
     /**
