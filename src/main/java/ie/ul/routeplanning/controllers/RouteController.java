@@ -113,22 +113,6 @@ public class RouteController {
     }
 
     /**
-     * A get request to redirect from post request for route generation
-     * @return the name of the view
-     */
-    @RequestMapping(value="/routes/generated", method=RequestMethod.GET)
-    public String viewGeneratedRoutes(Model model, @ModelAttribute("startWaypoint") String startWaypoint,
-                                      @ModelAttribute("endWaypoint") String endWaypoint,
-                                      @ModelAttribute("routes") List<Route> routes,
-                                      @ModelAttribute("ecoFriendly") boolean ecoFriendly) {
-        model.addAttribute("startWaypoint", startWaypoint);
-        model.addAttribute("endWaypoint", endWaypoint);
-        model.addAttribute("routes", routes);
-        model.addAttribute("ecoFriendly", ecoFriendly);
-        return "routes";
-    }
-
-    /**
      * The controller method for accessing a route
      * @param model the model for this request
      * @param routeID the ID of the route passed in on the request
