@@ -46,12 +46,12 @@ public class DijkstraAlgorithm extends PathFindingAlgorithm {
 
         Node target = null;
 
-        while (visited.size() != vertices) {
+        while (visited.size() != vertices && !priorityQueue.isEmpty()) {
             Node node = priorityQueue.remove();
             Waypoint u = node.node;
             double uDist = distances.get(u);
 
-            if (u.equals(end)) { // || node.cost < target.cost)) {
+            if (u.equals(end)) {
                 target = node;
                 break; // we found our end node. Since Dijkstra's always follows the shortest path, we can break after the end is reached
             }

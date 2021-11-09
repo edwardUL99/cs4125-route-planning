@@ -52,7 +52,36 @@
             <div th:if="${error != null}" class="alert alert-danger w-50"><p th:text="${error}"></p></div>
         </div>
     </div>
-    <div th:if="${error == null && routes != null && routes.size() > 0}" class="card shadow px-5 mt-5 py-5 rounded">
+    <div th:if="${error == null && bestRoute != null}" class="card shadow px-5 mt-5 mb-2 py-5 rounded">
+        <div class="text-center">
+            <h4>Best Route</h4>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Route</th>
+                    <th scope="col">Intermediary Stops</th>
+                    <th scope="col">Distance</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr th:with="route=${bestRoute}">
+                <td th:text="${route.getStart().name + ' to ' + route.getEnd().name}"></td>
+                <td th:with="numStops=${route.getNumberStops()}">
+                    <p th:if="${numStops > 0}"><span th:text="${numStops}"></span> stop(s)</p>
+                    <span th:unless="${numStops > 0}">Direct (no stops)</span>
+                </td>
+                <td><span th:text="${route.calculateDistance()}"></span> km</td>
+                <td><a th:href="@{'/route/' + ${route.getId()}}" class="btn btn-link">View Route</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${error == null && routes != null && routes.size() > 0}" class="card shadow px-5 mt-5 mb-2 py-5 rounded">
+        <div class="text-center">
+            <h4>Next <span th:text="${routes.size()}"></span> best routes</h4>
+        </div>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -76,9 +105,10 @@
         </table>
     </div>
     <div th:if="${error == null && routes != null && routes.size() == 0 && !startWaypoint.isEmpty() && !endWaypoint.isEmpty()}"
-         class="card shadow px-5 mt-5 py-5 rounded">
+         class="card shadow px-5 mt-5 mb-2 py-5 rounded">
         <div class="text-center">
-            <h4>There are no routes available for <span th:text="${startWaypoint}"></span> to <span th:text="${endWaypoint}"></span></h4>
+            <h4 th:if="${bestRoute == null}">There are no routes available for <span th:text="${startWaypoint}"></span> to <span th:text="${endWaypoint}"></span></h4>
+            <h4 th:unless="${bestRoute == null}">There are no more routes available for <span th:text="${startWaypoint}"></span> to <span th:text="${endWaypoint}"></span></h4>
         </div>
     </div>
 </div>
