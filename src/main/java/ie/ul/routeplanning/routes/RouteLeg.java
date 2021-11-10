@@ -160,6 +160,14 @@ public class RouteLeg implements Edge {
 	}
 
 	/**
+	 * Calculates the CO2 emissions for this route
+	 * @return the CO2 emissions for this route
+	 */
+	public double calculateCO2Emissions() {
+		return transportMethod.getCO2EmissionsPerKm() * calculateDistance();
+	}
+
+	/**
 	 * Calculate the distance from the start waypoint to end waypoint in kilometres by latitude and longitude
 	 * @return calculated distance
 	 */

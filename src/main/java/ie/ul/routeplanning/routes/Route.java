@@ -134,9 +134,22 @@ public class Route {
      * @param timeValue time in double format
      * @return time in String format
      */
-   public String standardizeTime(double timeValue) {
+    public String standardizeTime(double timeValue) {
         String timeString = "";
         //TODO: return the time as a String
         return timeString;
+    }
+
+    /**
+     * Calculates the average co2 emissions for this route
+     * @return the calculated co2 emissions
+     */
+    public double calculateCO2Emissions() {
+        double emissions = 0.0;
+
+        for (RouteLeg routeLeg : routeLegs)
+            emissions += routeLeg.calculateCO2Emissions();
+
+        return emissions;
     }
 }

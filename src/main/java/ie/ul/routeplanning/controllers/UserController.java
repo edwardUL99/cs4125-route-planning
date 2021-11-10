@@ -80,7 +80,7 @@ public class UserController {
         }
 
         if (error != null) {
-            model.addAttribute("error", "Your username and password is invalid"); // todo maybe change these to boolean
+            model.addAttribute("error", "Your username and password is invalid");
         }
 
         if (logout != null) {

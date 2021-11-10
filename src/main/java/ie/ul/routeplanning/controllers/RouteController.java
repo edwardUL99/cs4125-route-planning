@@ -111,6 +111,8 @@ public class RouteController {
             modelAndView.setViewName("redirect:/routes");
         }
 
+        // TODO display co2 and time information in routes.html and route.html
+
         return modelAndView;
     }
 

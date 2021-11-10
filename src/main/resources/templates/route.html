@@ -19,7 +19,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row align-items-center h-100">
+            <div th:with="distance=${route.calculateDistance()}" class="row align-items-center h-100">
                 <div class="col text-center">
                     <h5>Start</h5>
                     <p th:text="${route.getStart().name}"></p>
@@ -30,7 +30,11 @@
                 </div>
                 <div class="col text-center">
                     <h5>Distance</h5>
-                    <p><span th:text="${route.calculateDistance()}"></span> km</p>
+                    <p><span th:text="${distance}"></span> km</p>
+                </div>
+                <div class="col text-center">
+                    <h5>Average CO2 Emissions</h5>
+                    <p><span th:text="${route.calculateCO2Emissions()}"></span>g</p>
                 </div>
             </div>
         </div>
@@ -46,6 +50,7 @@
                         <th scope="col">End</th>
                         <th scope="col">Distance</th>
                         <th scope="col">Transport Method</th>
+                        <th scope="col">Average CO2 Emissions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,6 +60,7 @@
                         <td th:text="${leg.end.name}"></td>
                         <td><span th:text="${leg.calculateDistance()}"></span> km</td>
                         <td th:text="${leg.transportMethod.getName()}"></td>
+                        <td><span th:text="${leg.calculateCO2Emissions()}"></span>g</td>
                     </tr>
                 </tbody>
             </table>
