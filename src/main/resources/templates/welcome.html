@@ -14,7 +14,7 @@
         <div class="row align-items-center h-100">
             <div class="col-6 mx-auto">
                 <div class="text-center">
-                    <h3>Welcome to the route planning system</h3>
+                    <h3>Welcome to the Route Planning System</h3>
                 </div>
             </div>
         </div>
@@ -24,10 +24,13 @@
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
             </div>
-            <h2>Welcome <span sec:authentication="name"></span> | <a onclick="document.forms['logoutForm'].submit()">Logout</a></h2>
+            <h2>Welcome <span sec:authentication="name"></span></h2>
             <ul>
                 <li><a th:href="@{/routes}">Routes</a></li>
             </ul>
+            <div class="text-end">
+                <a href="javascript:void" onclick="document.forms['logoutForm'].submit()">Logout</a>
+            </div>
         </div>
     </div>
 </div>

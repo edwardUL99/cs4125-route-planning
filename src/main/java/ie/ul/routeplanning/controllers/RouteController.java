@@ -1,14 +1,11 @@
 package ie.ul.routeplanning.controllers;
 
-import ie.ul.routeplanning.constants.Constant;
 import ie.ul.routeplanning.repositories.RouteRepository;
-import ie.ul.routeplanning.repositories.WaypointRepository;
 import ie.ul.routeplanning.routes.Route;
 import ie.ul.routeplanning.routes.Waypoint;
-import ie.ul.routeplanning.routes.data.SourceFactory;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.routes.graph.creation.BuilderException;
-import ie.ul.routeplanning.routes.graph.creation.BuilderFactory;
+import ie.ul.routeplanning.services.GraphService;
 import ie.ul.routeplanning.services.RouteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,16 +24,16 @@ import java.util.Optional;
 @Controller
 public class RouteController {
     /**
-     * Our repository for saving and loading waypoints
-     */
-    @Autowired
-    private WaypointRepository waypointRepository;
-
-    /**
      * Our repository for saving and loading routes
      */
     @Autowired
     private RouteRepository routeRepository;
+
+    /**
+     * The graph service for loading our graph
+     */
+    @Autowired
+    private GraphService graphService;
 
     /**
      * Our route service for generating routes
@@ -46,32 +42,34 @@ public class RouteController {
     private RouteService routeService;
 
     /**
-     * Lazily initialises the graph
-     * @throws BuilderException if an exception occurs building the graph
-     */
-    private Graph getGraph() throws BuilderException {
-        List<Waypoint> waypoints = new ArrayList<>();
-        waypointRepository.findAll().forEach(waypoints::add);
-        return BuilderFactory.fromFile("edges.json", SourceFactory.fromList(waypoints)).buildGraph();
-    }
-
-    /**
      * The home page for the routes
      * @param model the model for the view
+     * @param response the response to the request
      * @return the name of the routes page
      */
     @RequestMapping(value="/routes", method=RequestMethod.GET)
-    public String routesHome(Model model) {
+    public String routesHome(Model model, HttpServletResponse response) {
+        if (model.asMap().size() != 0) {
+            response.addHeader("Cache-Control", "Public");
+        }
+
         return "routes";
     }
 
     /**
-     * Find a waypoint with the provided name
-     * @param name the name of the waypoint
-     * @return an optional containing the waypoint, empty if not found
+     * Loads and returns the graph
+     * @return the loaded graph or null if an error occurs
      */
-    private Optional<Waypoint> findWaypoint(String name) {
-        return waypointRepository.findByName(name).stream().findFirst();
+    private Graph loadGraph() {
+        Graph graph = null;
+
+        try {
+            graph = graphService.loadGraph();
+        } catch (BuilderException ex) {
+            ex.printStackTrace();
+        }
+
+        return graph;
     }
 
     /**
@@ -96,39 +94,28 @@ public class RouteController {
             Waypoint start = parameters.getStart();
             Waypoint end = parameters.getEnd();
 
-            List<Route> routes = routeService.generateRoutes(getGraph(), start, end, ecoFriendly);
+            Graph graph = loadGraph();
 
-            routeRepository.saveAll(routes);
+            if (graph != null) {
+                List<Route> routes = routeService.generateRoutes(graph, start, end, ecoFriendly);
 
-            Route bestRoute = (routes.size() == 0) ? null:routes.remove(0);
+                routeRepository.saveAll(routes);
 
-            redirectAttributes.addFlashAttribute("bestRoute", bestRoute);
-            redirectAttributes.addFlashAttribute("routes", routes);
+                Route bestRoute = (routes.size() == 0) ? null : routes.remove(0);
 
-            modelAndView.setViewName("redirect:/routes/generated");
+                redirectAttributes.addFlashAttribute("bestRoute", bestRoute);
+                redirectAttributes.addFlashAttribute("routes", routes);
+            } else {
+                redirectAttributes.addFlashAttribute("error", "An error occurred generating routes, please try again");
+            }
         } else {
             redirectAttributes.addFlashAttribute("error", parameters.getError());
-            modelAndView.setViewName("redirect:/routes");
         }
+        modelAndView.setViewName("redirect:/routes");
 
         // TODO display co2 and time information in routes.html and route.html
 
         return modelAndView;
-    }
-
-    /**
-     * Views the generated routes
-     * @param model the model for holding the attributes
-     * @return the name of the view
-     */
-    @RequestMapping("/routes/generated")
-    public String viewGeneratedRoutes(Model model, HttpServletResponse response) {
-        if (model.asMap().size() == 0) {
-            return "redirect:/routes";
-        } else {
-            response.addHeader("Cache-Control", "Public");
-            return "routes";
-        }
     }
 
     /**
