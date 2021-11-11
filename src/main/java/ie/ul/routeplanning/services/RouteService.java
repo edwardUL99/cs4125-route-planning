@@ -4,11 +4,8 @@ import ie.ul.routeplanning.routes.Route;
 import ie.ul.routeplanning.routes.Waypoint;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.users.User;
-import org.springframework.ui.Model;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * This interface represents a route service for generating routes
@@ -33,11 +30,17 @@ public interface RouteService {
     List<Route> generateRoutes(Graph graph, Waypoint start, Waypoint end, boolean ecoFriendly);
 
     /**
-     * Save the route with the given user
+     * Save the route with the given user as a SavedRoute
      * @param user the user to save the route on
      * @param route the route to save
      */
     void saveRoute(User user, Route route);
+
+    /**
+     * Delete the route with the given id
+     * @param id the id of the route to delete
+     */
+    void deleteRoute(Long id);
 
     /**
      * Retrieves all the saved routes for the provided user

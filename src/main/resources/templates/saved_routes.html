@@ -41,8 +41,19 @@
                         <span th:unless="${numStops > 0}">Direct (no stops)</span>
                     </td>
                     <td><span th:text="${route.calculateDistance()}"></span> km</td>
-                    <td>
-                        <a th:href="@{'/route/' + ${route.getId()}}" class="btn btn-link">View Route</a>
+                    <td th:with="id=${route.getId()}">
+                        <div class="row">
+                            <div class="col-sm">
+                                <a th:href="@{'/route/' + ${id}}" class="btn btn-link">View Route</a>
+                            </div>
+                            <div class="col-sm">
+                                <form method="POST" th:action="@{/routes/saved}">
+                                    <input type="hidden" name="action" value="DELETE">
+                                    <input type="hidden" name="routeID" th:value="${id}">
+                                    <button class="btn btn-link btn-danger">Delete Route</button>
+                                </form>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </tbody>

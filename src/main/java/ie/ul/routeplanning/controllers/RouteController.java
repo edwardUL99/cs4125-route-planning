@@ -184,7 +184,7 @@ public class RouteController {
      * @param model the model to add attributes to
      * @return the name of the view
      */
-    @RequestMapping("/routes/saved")
+    @RequestMapping(value="/routes/saved", method=RequestMethod.GET)
     public String savedRoutes(Model model) {
         String username = securityService.getUsername();
 
@@ -199,5 +199,23 @@ public class RouteController {
         } else {
             return "redirect:/";
         }
+    }
+
+    /**
+     * Perform an action on the provided saved route
+     * @param model the model for the view
+     * @param action the action to perform on the saved route
+     * @param routeID the ID of the route to perform the action on
+     * @return the name of the view
+     */
+    @RequestMapping(value="/routes/saved", method=RequestMethod.POST)
+    public String savedRouteAction(Model model, @RequestParam String action, @RequestParam Long routeID) {
+        action = action.toUpperCase();
+
+        if (action.equals("DELETE")) {
+            routeService.deleteRoute(routeID);
+        }
+
+        return "redirect:/routes/saved";
     }
 }

@@ -80,7 +80,7 @@ public class RouteServiceImpl implements RouteService {
     }
 
     /**
-     * Save the route with the given user
+     * Save the route with the given user as a SavedRoute
      *
      * @param user  the user to save the route on
      * @param route the route to save
@@ -89,6 +89,16 @@ public class RouteServiceImpl implements RouteService {
     public void saveRoute(User user, Route route) {
         SavedRoute savedRoute = new SavedRoute(null, user, route);
         routeRepository.save(savedRoute);
+    }
+
+    /**
+     * Delete the route with the given id
+     *
+     * @param id the id of the route to delete
+     */
+    @Override
+    public void deleteRoute(Long id) {
+        routeRepository.deleteById(id);
     }
 
     /**

@@ -36,7 +36,7 @@ public class RouteLeg implements Edge {
 	/**
 	 * The name of the transport method taking this leg of the route
 	 */
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(cascade=CascadeType.MERGE)
 	private TransportMethod transportMethod;
 	/**
 	 * A pre-defined distance for this edge. If null, the coordinate km distance will be used
