@@ -152,4 +152,12 @@ public class Route {
 
         return emissions;
     }
+
+    /**
+     * A method to determine if this route has been saved on a user's account or not
+     * @return true if a saved route, false if not
+     */
+    public boolean isSaved() {
+        return false;
+    }
 }

@@ -18,6 +18,12 @@ public interface SecurityService {
     void autoLogin(String username, String password);
 
     /**
+     * Gets the username of the current user logged in if any
+     * @return the username of the current user logged in, null if not logged in
+     */
+    String getUsername();
+
+    /**
      * Bypass authentication for testing purposes
      */
     boolean BYPASS_AUTH = System.getProperty("BYPASS_AUTH") != null;

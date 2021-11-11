@@ -22,8 +22,11 @@
                 </div>
             </div>
             <div class="row">
-                <form method="POST" th:action="@{/login}">
+                <div th:if="${message}" class="alert alert-info alert-dismissible w-50 mx-auto">
                     <span th:text="${message}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <form method="POST" th:action="@{/login}">
                     <div class="form-group">
                         <label>Username:</label>
                         <input type="text" class="form-control" name="username" placeholder="username" required>

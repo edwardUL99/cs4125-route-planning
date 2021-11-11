@@ -67,4 +67,21 @@ public class SecurityServiceImpl implements SecurityService{
             }
         }
     }
+
+    /**
+     * Gets the username of the current user logged in if any
+     *
+     * @return the username of the current user logged in, null if not logged in
+     */
+    @Override
+    public String getUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null) {
+            Object principal = authentication.getPrincipal();
+            return (principal instanceof UserDetails) ? ((UserDetails)principal).getUsername():principal.toString();
+        } else {
+            return null;
+        }
+    }
 }

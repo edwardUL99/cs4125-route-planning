@@ -3,6 +3,7 @@ package ie.ul.routeplanning.services;
 import ie.ul.routeplanning.routes.Route;
 import ie.ul.routeplanning.routes.Waypoint;
 import ie.ul.routeplanning.routes.graph.Graph;
+import ie.ul.routeplanning.users.User;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -14,6 +15,13 @@ import java.util.Optional;
  */
 public interface RouteService {
     /**
+     * Retrieve the route with the provided ID
+     * @param id the id of the route to retrieve
+     * @return the found route, or null if not found
+     */
+    Route getRoute(Long id);
+
+    /**
      * Generate the routes using the provided graph and waypoints. It is expected that the first route in the list, if
      * any, is the best route, with the subsequent routes being the next best ones
      * @param graph the graph to generate the route with
@@ -23,6 +31,20 @@ public interface RouteService {
      * @return the list of generated routes
      */
     List<Route> generateRoutes(Graph graph, Waypoint start, Waypoint end, boolean ecoFriendly);
+
+    /**
+     * Save the route with the given user
+     * @param user the user to save the route on
+     * @param route the route to save
+     */
+    void saveRoute(User user, Route route);
+
+    /**
+     * Retrieves all the saved routes for the provided user
+     * @param user the user to retrieve saved routes for
+     * @return the list of saved routes for the provided user
+     */
+    List<Route> getSavedRoutes(User user);
 
     /**
      * Validates and parses the parameters for route generation. If not valid, an "error" flash attribute is set in the model and a
