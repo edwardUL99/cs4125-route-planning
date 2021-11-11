@@ -71,7 +71,7 @@ public class SecurityServiceImpl implements SecurityService{
     /**
      * Gets the username of the current user logged in if any
      *
-     * @return the username of the current user logged in, null if not logged in
+     * @return the username of the current user logged in, null if not logged in or anonymous user
      */
     @Override
     public String getUsername() {
@@ -79,7 +79,9 @@ public class SecurityServiceImpl implements SecurityService{
 
         if (authentication != null) {
             Object principal = authentication.getPrincipal();
-            return (principal instanceof UserDetails) ? ((UserDetails)principal).getUsername():principal.toString();
+            String username = (principal instanceof UserDetails) ? ((UserDetails)principal).getUsername():principal.toString();
+
+            return (username.equals("anonymousUser")) ? null:username;
         } else {
             return null;
         }

@@ -19,7 +19,7 @@ public interface SecurityService {
 
     /**
      * Gets the username of the current user logged in if any
-     * @return the username of the current user logged in, null if not logged in
+     * @return the username of the current user logged in, null if not logged in or anonymous user
      */
     String getUsername();
 

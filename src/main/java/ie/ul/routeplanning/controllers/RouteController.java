@@ -155,7 +155,7 @@ public class RouteController {
         } else {
             String username = securityService.getUsername();
 
-            if (username != null && !username.equals("anonymousUser")) {
+            if (username != null) {
                 User user = userService.findByUsername(username);
                 routeService.saveRoute(user, route);
 
@@ -180,7 +180,7 @@ public class RouteController {
     public String savedRoutes(Model model) {
         String username = securityService.getUsername();
 
-        if (username != null && !username.equals("anonymousUser")) {
+        if (username != null) {
             User user = userService.findByUsername(username);
             List<Route> savedRoutes = routeService.getSavedRoutes(user);
 
