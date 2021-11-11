@@ -61,7 +61,6 @@ public class RouteServiceImpl implements RouteService {
      */
     @Override
     public List<Route> generateRoutes(Graph graph, Waypoint start, Waypoint end, boolean ecoFriendly) {
-        graph = graph.copy();
         WeightFunction weightFunction = new WeightFunctionBuilder().withEmissions(ecoFriendly).build();
         Algorithm<Route> algorithm = AlgorithmFactory.dijkstraAlgorithm(start, end, weightFunction);
         Result<Route> result = algorithm.perform(graph);

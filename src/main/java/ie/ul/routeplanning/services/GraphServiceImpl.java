@@ -31,21 +31,30 @@ public class GraphServiceImpl implements GraphService {
      */
     @Autowired
     private TransportMethodRepository transportMethodRepository;
+    /**
+     * The singleton graph instance which is lazily initialised by loadGraph
+     */
+    private static Graph GRAPH_INSTANCE = null;
 
     /**
-     * Loads the graph and returns it
+     * Loads the graph as a singleton instance and returns a copy of it.
      *
      * @return the loaded graph or a builder exception if it failed to be created
      * @throws BuilderException if an error occurred creating the graph
      */
     @Override
     public Graph loadGraph() throws BuilderException {
-        Map<String, TransportMethod> transportMethodMap = new HashMap<>();
+        if (GRAPH_INSTANCE == null) {
+            Map<String, TransportMethod> transportMethodMap = new HashMap<>();
 
-        transportMethodRepository.findAll().forEach(t -> transportMethodMap.put(t.getName(), t));
+            transportMethodRepository.findAll().forEach(t -> transportMethodMap.put(t.getName(), t));
 
-        List<Waypoint> waypoints = new ArrayList<>();
-        waypointRepository.findAll().forEach(waypoints::add);
-        return BuilderFactory.fromFile("edges.json", SourceFactory.fromList(waypoints), transportMethodMap).buildGraph();
+            List<Waypoint> waypoints = new ArrayList<>();
+            waypointRepository.findAll().forEach(waypoints::add);
+            GRAPH_INSTANCE = BuilderFactory.fromFile("edges.json",
+                    SourceFactory.fromList(waypoints), transportMethodMap).buildGraph();
+        }
+
+        return GRAPH_INSTANCE.copy();
     }
 }

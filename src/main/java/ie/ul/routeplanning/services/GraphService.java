@@ -8,8 +8,9 @@ import ie.ul.routeplanning.routes.graph.creation.BuilderException;
  */
 public interface GraphService {
     /**
-     * Loads the graph and returns it
-     * @return the loaded graph or a builder exception if it failed to be created
+     * Loads the graph as a singleton instance and returns a copy of it.
+     *
+     * @return the loaded graph
      * @throws BuilderException if an error occurred creating the graph
      */
     Graph loadGraph() throws BuilderException;
