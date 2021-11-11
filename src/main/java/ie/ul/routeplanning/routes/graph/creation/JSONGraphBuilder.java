@@ -38,16 +38,22 @@ public class JSONGraphBuilder implements GraphBuilder {
 	 * The JSONGraphBuilder requires waypoints to parse the vertices, so it uses a WaypointSource
 	 */
 	private final WaypointSource waypointSource;
+	/**
+	 * A map of transport method names to the corresponding instances
+	 */
+	private final Map<String, TransportMethod> transportMethods;
 
 	/**
 	 * Constructs a builder from the provided waypoint source
 	 * @param jsonFile the json file containing the edges definitions
 	 * @param waypointSource the waypoint source to read waypoints from
+	 * @param transportMethods a map mapping name to transport methods. Expected to have all the supported transport methods in the JSON file
 	 */
-	public JSONGraphBuilder(String jsonFile, WaypointSource waypointSource) {
+	public JSONGraphBuilder(String jsonFile, WaypointSource waypointSource, Map<String, TransportMethod> transportMethods) {
 		this.jsonFile = jsonFile;
 		this.gson = new Gson();
 		this.waypointSource = waypointSource;
+		this.transportMethods = transportMethods;
 	}
 
 	/**
@@ -75,8 +81,7 @@ public class JSONGraphBuilder implements GraphBuilder {
 			createdVertices.put(end, endPoint);
 		}
 
-		TransportMethod transportMethod = TransportFactory.getTransportMethod(
-				TransportFactory.TransportMethods.valueOfLabel(jsonEdge.transportMethod));
+		TransportMethod transportMethod = transportMethods.get(jsonEdge.transportMethod);
 
 		return new RouteLeg(startPoint, endPoint, transportMethod, jsonEdge.distance);
 	}
