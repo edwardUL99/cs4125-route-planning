@@ -26,7 +26,10 @@
             </div>
             <h2>Welcome <span sec:authentication="name"></span></h2>
             <ul>
-                <li><a th:href="@{/routes}">Routes</a></li>
+                <li><a th:href="@{/routes}">Generate Routes</a></li>
+            </ul>
+            <ul>
+                <li><a th:href="@{/routes/saved}">Saved Routes</a></li>
             </ul>
             <div class="text-end">
                 <a href="javascript:void" onclick="document.forms['logoutForm'].submit()">Logout</a>

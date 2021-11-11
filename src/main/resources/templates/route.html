@@ -38,6 +38,12 @@
                 </div>
             </div>
         </div>
+        <div th:if="${success != null}" class="row mt-5">
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
         <div class="card shadow px-5 mt-5 py-5">
             <div class="row text-center">
                 <h4>Route Legs</h4>
