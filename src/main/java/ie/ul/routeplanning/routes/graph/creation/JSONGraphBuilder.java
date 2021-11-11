@@ -8,7 +8,6 @@ import ie.ul.routeplanning.routes.Waypoint;
 import ie.ul.routeplanning.routes.data.WaypointException;
 import ie.ul.routeplanning.routes.data.WaypointSource;
 import ie.ul.routeplanning.routes.graph.Graph;
-import ie.ul.routeplanning.transport.TransportFactory;
 import ie.ul.routeplanning.transport.TransportMethod;
 
 import java.io.BufferedReader;

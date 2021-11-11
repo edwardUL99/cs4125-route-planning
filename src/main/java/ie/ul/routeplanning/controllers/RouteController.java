@@ -1,8 +1,6 @@
 package ie.ul.routeplanning.controllers;
 
-import ie.ul.routeplanning.repositories.RouteRepository;
 import ie.ul.routeplanning.routes.Route;
-import ie.ul.routeplanning.routes.SavedRoute;
 import ie.ul.routeplanning.routes.Waypoint;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.routes.graph.creation.BuilderException;
@@ -12,9 +10,6 @@ import ie.ul.routeplanning.services.SecurityService;
 import ie.ul.routeplanning.services.UserService;
 import ie.ul.routeplanning.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * The controller class for handling routes
