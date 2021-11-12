@@ -25,9 +25,10 @@ public interface RouteService {
      * @param start the starting waypoint
      * @param end the end waypoint
      * @param ecoFriendly true if the routes should be CO2 aware
+     * @param time        true if time should be factored into the route duration
      * @return the list of generated routes
      */
-    List<Route> generateRoutes(Graph graph, Waypoint start, Waypoint end, boolean ecoFriendly);
+    List<Route> generateRoutes(Graph graph, Waypoint start, Waypoint end, boolean ecoFriendly, boolean time);
 
     /**
      * Save the route with the given user as a SavedRoute

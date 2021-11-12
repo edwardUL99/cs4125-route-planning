@@ -29,8 +29,8 @@ public class TimeWeightDecorator implements WeightFunction {
      */
     @Override
     public double calculate(Edge edge) {
-        // TODO this may not be correct
-        Duration time = edge.getTransportMethod().getTimePerKm().multipliedBy(edge.getDistance().longValue());
-        return weightFunction.calculate(edge) + time.toHours();
+        double kmHour = edge.getTransportMethod().getAverageSpeed();
+        double factor = edge.getDistance() / kmHour;
+        return weightFunction.calculate(edge) + factor;
     }
 }

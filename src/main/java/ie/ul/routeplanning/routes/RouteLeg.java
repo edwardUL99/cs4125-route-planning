@@ -5,6 +5,7 @@ import ie.ul.routeplanning.routes.graph.GraphUtils;
 import ie.ul.routeplanning.transport.TransportMethod;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.util.Objects;
 
 /**
@@ -179,11 +180,10 @@ public class RouteLeg implements Edge {
 	 * Calculate the time for this RouteLeg without any parameters
 	 * @return the time as a double
 	 */
-	public double calculateTime() {
-		double time = 0;
-		// TODO calculate the time
+	public Duration calculateTime() {
+		double time = calculateDistance() / transportMethod.getAverageSpeed();
 
-		return time;
+		return Duration.ofMinutes((long)(time * 60));
 	}
 
 	/**

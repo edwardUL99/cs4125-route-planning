@@ -84,16 +84,18 @@ public class RouteController {
      * @param startWaypoint the name of the start waypoint
      * @param endWaypoint the name of the end waypoint
      * @param ecoFriendly true if the routes are to be filtered by eco friendliness
+     * @param time        true if time should be factored into the route duration
      * @return the name of the view
      */
     @RequestMapping(value="/routes", method=RequestMethod.POST)
     public ModelAndView generateRoutes(RedirectAttributes redirectAttributes, @RequestParam String startWaypoint, @RequestParam String endWaypoint,
-                                       @RequestParam(required=false) boolean ecoFriendly) {
+                                       @RequestParam(required=false) boolean ecoFriendly, @RequestParam(required=false) boolean time) {
         RouteService.RouteParameters parameters = routeService.parseParameters(startWaypoint, endWaypoint);
 
         redirectAttributes.addFlashAttribute("startWaypoint", startWaypoint);
         redirectAttributes.addFlashAttribute("endWaypoint", endWaypoint);
         redirectAttributes.addFlashAttribute("ecoFriendly", ecoFriendly);
+        redirectAttributes.addFlashAttribute("time", time);
 
         ModelAndView modelAndView = new ModelAndView();
 
@@ -104,7 +106,7 @@ public class RouteController {
             Graph graph = loadGraph();
 
             if (graph != null) {
-                List<Route> routes = routeService.generateRoutes(graph, start, end, ecoFriendly);
+                List<Route> routes = routeService.generateRoutes(graph, start, end, ecoFriendly, time);
 
                 Route bestRoute = (routes.size() == 0) ? null : routes.remove(0);
 
@@ -117,8 +119,6 @@ public class RouteController {
             redirectAttributes.addFlashAttribute("error", parameters.getError());
         }
         modelAndView.setViewName("redirect:/routes");
-
-        // TODO display co2 and time information in routes.html and route.html
 
         return modelAndView;
     }
