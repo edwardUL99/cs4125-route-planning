@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Routes</title>
+    <title>Route</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
@@ -36,6 +36,10 @@
                     <h5>Average CO2 Emissions</h5>
                     <p><span th:text="${route.calculateCO2Emissions()}"></span>g</p>
                 </div>
+                <div class="col text-center" th:with="time=${route.calculateTime()}">
+                    <h5>Average Duration</h5>
+                    <p><span th:text="${time.toHoursPart()}"></span> H <span th:text="${time.toMinutesPart()}"></span> Min</p>
+                </div>
             </div>
         </div>
         <div th:if="${success != null}" class="row mt-5">
@@ -57,6 +61,7 @@
                         <th scope="col">Distance</th>
                         <th scope="col">Transport Method</th>
                         <th scope="col">Average CO2 Emissions</th>
+                        <th scope="col">Average Time</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,6 +72,9 @@
                         <td><span th:text="${leg.calculateDistance()}"></span> km</td>
                         <td th:text="${leg.transportMethod.getName()}"></td>
                         <td><span th:text="${leg.calculateCO2Emissions()}"></span>g</td>
+                        <td th:with="time=${leg.calculateTime()}">
+                            <p><span th:text="${time.toHoursPart()}"></span>H <span th:text="${time.toMinutesPart()}"> </span>Min</p>
+                        </td>
                     </tr>
                 </tbody>
             </table>

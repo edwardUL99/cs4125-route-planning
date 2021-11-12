@@ -57,11 +57,12 @@ public class RouteServiceImpl implements RouteService {
      * @param start       the starting waypoint
      * @param end         the end waypoint
      * @param ecoFriendly true if the routes should be CO2 aware
+     * @param time        true if time should be factored into the route duration
      * @return the list of generated routes
      */
     @Override
-    public List<Route> generateRoutes(Graph graph, Waypoint start, Waypoint end, boolean ecoFriendly) {
-        WeightFunction weightFunction = new WeightFunctionBuilder().withEmissions(ecoFriendly).build();
+    public List<Route> generateRoutes(Graph graph, Waypoint start, Waypoint end, boolean ecoFriendly, boolean time) {
+        WeightFunction weightFunction = new WeightFunctionBuilder().withEmissions(ecoFriendly).withTime(time).build();
         Algorithm<Route> algorithm = AlgorithmFactory.dijkstraAlgorithm(start, end, weightFunction);
         Result<Route> result = algorithm.perform(graph);
 

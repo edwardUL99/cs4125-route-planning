@@ -1,7 +1,6 @@
 package ie.ul.routeplanning.transport;
 
 import javax.persistence.Entity;
-import java.time.Duration;
 
 /**
  * This represents a transport method for a bus
@@ -35,24 +34,12 @@ public class BusTransportMethod extends TransportMethod {
 	}
 
 	/**
-	 * Gets the average duration per kilometre for this transport method
-	 *
-	 * @return the average duration it takes to travel a kilometre by this transport method
-	 */
-	@Override
-	public Duration getTimePerKm() {
-		// TODO implement
-		return null;
-	}
-
-	/**
 	 * Gets the average speed per kilometre for this transport method
 	 *
 	 * @return average speed in km/h
 	 */
 	@Override
-	public double getAverageSpeedPerKm() {
-		// TODO implement
-		return 0;
+	public double getAverageSpeed() {
+		return 80;
 	}
 }
