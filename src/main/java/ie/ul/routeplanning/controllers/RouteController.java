@@ -129,7 +129,7 @@ public class RouteController {
      * @param routeID the ID of the route passed in on the request
      * @return the name of the view to load
      */
-    @RequestMapping("/route/{routeID}")
+    @RequestMapping("/routes/{routeID}")
     public String getRoute(Model model, @PathVariable Long routeID) {
         Route route = routeService.getRoute(routeID);
         model.addAttribute("route", route);

@@ -71,6 +71,13 @@
                 </tbody>
             </table>
         </div>
+        <div th:if="${route.isSaved()}" class="row text-end mt-2">
+            <form method="POST" th:action="@{/routes/saved}">
+                <input type="hidden" name="action" value="DELETE">
+                <input type="hidden" name="routeID" th:value="${route.getId()}">
+                <button class="btn btn-danger">Delete Route</button>
+            </form>
+        </div>
     </div>
     <div th:unless="${route != null}">
         <div class="card shadow px-5 mt-5 py-5">

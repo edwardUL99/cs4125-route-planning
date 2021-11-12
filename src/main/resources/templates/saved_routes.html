@@ -44,13 +44,13 @@
                     <td th:with="id=${route.getId()}">
                         <div class="row">
                             <div class="col-sm">
-                                <a th:href="@{'/route/' + ${id}}" class="btn btn-link">View Route</a>
+                                <a th:href="@{'/routes/' + ${id}}" class="btn btn-link">View Route</a>
                             </div>
                             <div class="col-sm">
                                 <form method="POST" th:action="@{/routes/saved}">
                                     <input type="hidden" name="action" value="DELETE">
                                     <input type="hidden" name="routeID" th:value="${id}">
-                                    <button class="btn btn-link btn-danger">Delete Route</button>
+                                    <button class="btn btn-danger">Delete Route</button>
                                 </form>
                             </div>
                         </div>
