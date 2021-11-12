@@ -1,14 +1,14 @@
 package ie.ul.routeplanning.repositories;
 
+import ie.ul.routeplanning.constants.Constant;
 import ie.ul.routeplanning.transport.TransportFactory;
 import ie.ul.routeplanning.transport.TransportMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class loads in all available transport methods on system startup.
@@ -39,11 +39,18 @@ public class TransportMethodLoader implements CommandLineRunner {
      */
     @Override
     public void run(String... args) throws Exception {
+        Set<TransportMethod> loadedTransportMethods =
+                new LinkedHashSet<>(Constant.iterableToSet(transportMethodRepository.findAll()));
+
         List<TransportMethod> transportMethods = new ArrayList<>();
 
         Arrays.stream(TransportFactory.TransportMethods.values())
                 .forEach(m -> transportMethods.add(TransportFactory.getTransportMethod(m)));
 
-        transportMethodRepository.saveAll(transportMethods);
+        Set<String> names = loadedTransportMethods.stream().map(TransportMethod::getName).collect(Collectors.toSet());
+        List<TransportMethod> newTransportMethods = transportMethods.stream()
+                .filter(s -> !names.contains(s.getName())).collect(Collectors.toList()); // only save new transport methods
+
+        transportMethodRepository.saveAll(newTransportMethods);
     }
 }
