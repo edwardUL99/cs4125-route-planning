@@ -161,7 +161,7 @@ public class RouteController {
 
                 redirectAttributes.addFlashAttribute("success", "Route has been saved successfully");
 
-                modelAndView.setViewName("redirect:/route/" + saveRouteID);
+                modelAndView.setViewName("redirect:/routes/" + saveRouteID);
             } else {
                 redirectAttributes.addFlashAttribute("error", "You must be a registered and logged in user to save a route");
                 modelAndView.setViewName("redirect:/routes");

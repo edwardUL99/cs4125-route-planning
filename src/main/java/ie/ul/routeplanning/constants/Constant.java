@@ -1,6 +1,6 @@
 package ie.ul.routeplanning.constants;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -22,7 +22,7 @@ public class Constant {
 	 * @return the converted set
 	 */
 	public static <T> Set<T> iterableToSet(Iterable<T> iterable) {
-		Set<T> result = new HashSet<>();
+		Set<T> result = new LinkedHashSet<>();
 		iterable.forEach(result::add);
 
 		return result;

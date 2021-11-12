@@ -1,10 +1,13 @@
 package ie.ul.routeplanning.repositories;
 
+import ie.ul.routeplanning.routes.Waypoint;
 import ie.ul.routeplanning.routes.data.SourceFactory;
 import ie.ul.routeplanning.routes.data.WaypointSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.function.Consumer;
 
 /**
  * This class loads in the waypoints into the waypoint repository on startup
@@ -33,6 +36,10 @@ public class WaypointsLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         WaypointSource source = SourceFactory.fromFile("waypoints.json");
-        waypointRepository.saveAll(source.getWaypoints());
+
+        Consumer<Waypoint> saveIfNotExists = w -> waypointRepository.findById(w.getId())
+        .orElseGet(() -> waypointRepository.save(w));
+
+        source.getWaypoints().forEach(saveIfNotExists);
     }
 }
