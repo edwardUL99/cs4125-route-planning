@@ -34,6 +34,8 @@ public class SavedRoute extends Route {
 
         if (route != null)
             route.getRouteLegs().forEach(this::addRouteLeg);
+
+        this.saved = true;
     }
 
     /**
@@ -73,15 +75,5 @@ public class SavedRoute extends Route {
      */
     public void setUser(User user) {
         this.user = user;
-    }
-
-    /**
-     * A method to determine if this route has been saved on a user's account or not
-     *
-     * @return true if a saved route, false if not
-     */
-    @Override
-    public boolean isSaved() {
-        return true;
     }
 }

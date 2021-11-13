@@ -21,6 +21,10 @@ public class Route {
      */
     @OneToMany(cascade=CascadeType.ALL)
     private final List<RouteLeg> routeLegs;
+    /**
+     * Determines if this route is saved or not
+     */
+    protected boolean saved;
 
     /**
      * Constructor for Route class that initializes a list of RouteLegs
@@ -148,6 +152,6 @@ public class Route {
      * @return true if a saved route, false if not
      */
     public boolean isSaved() {
-        return false;
+        return saved;
     }
 }

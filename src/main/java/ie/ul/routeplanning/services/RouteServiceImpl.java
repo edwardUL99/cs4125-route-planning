@@ -109,16 +109,7 @@ public class RouteServiceImpl implements RouteService {
      */
     @Override
     public List<Route> getSavedRoutes(User user) {
-        List<Route> savedRoutes = new ArrayList<>();
-        routeRepository.findAll().forEach(savedRoutes::add);
-
-        String username = user.getUsername();
-
-        return savedRoutes.stream().filter(Route::isSaved).map(r -> (SavedRoute) r).filter(r -> {
-            User owner = r.getUser();
-
-            return owner != null && owner.getUsername().equals(username);
-        }).collect(Collectors.toList());
+        return routeRepository.findSavedRoutesByUsername(user.getUsername());
     }
 
     /**
