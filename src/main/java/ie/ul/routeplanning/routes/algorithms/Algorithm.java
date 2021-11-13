@@ -3,7 +3,7 @@ package ie.ul.routeplanning.routes.algorithms;
 import ie.ul.routeplanning.routes.graph.Graph;
 
 /**
- * This interface represents an algorithm for processing a graph
+ * This interface represents an algorithm that operates on a graph
  * @param <T> the type of the results of this algorithm
  */
 public interface Algorithm<T> {

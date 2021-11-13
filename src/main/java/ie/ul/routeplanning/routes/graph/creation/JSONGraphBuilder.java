@@ -82,6 +82,9 @@ public class JSONGraphBuilder implements GraphBuilder {
 
 		TransportMethod transportMethod = transportMethods.get(jsonEdge.transportMethod);
 
+		if (transportMethod == null)
+			throw new IllegalStateException("No TransportMethod instance available for: " + jsonEdge.transportMethod);
+
 		return new RouteLeg(startPoint, endPoint, transportMethod, jsonEdge.distance);
 	}
 
