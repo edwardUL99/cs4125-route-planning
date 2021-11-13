@@ -1,6 +1,6 @@
 package ie.ul.routeplanning.routes.graph.creation;
 
-import ie.ul.routeplanning.routes.data.WaypointSource;
+import ie.ul.routeplanning.routes.waypoints.WaypointSource;
 import ie.ul.routeplanning.transport.TransportMethod;
 
 import java.io.File;

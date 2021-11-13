@@ -1,4 +1,4 @@
-package ie.ul.routeplanning.routes.data;
+package ie.ul.routeplanning.routes.waypoints;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package ie.ul.routeplanning.routes.data;
+package ie.ul.routeplanning.routes.waypoints;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;

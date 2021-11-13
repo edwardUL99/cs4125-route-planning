@@ -5,8 +5,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import ie.ul.routeplanning.routes.RouteLeg;
 import ie.ul.routeplanning.routes.Waypoint;
-import ie.ul.routeplanning.routes.data.WaypointException;
-import ie.ul.routeplanning.routes.data.WaypointSource;
+import ie.ul.routeplanning.routes.waypoints.WaypointException;
+import ie.ul.routeplanning.routes.waypoints.WaypointSource;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.transport.TransportMethod;
 

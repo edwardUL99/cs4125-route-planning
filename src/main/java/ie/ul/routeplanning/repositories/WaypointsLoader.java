@@ -1,8 +1,8 @@
 package ie.ul.routeplanning.repositories;
 
 import ie.ul.routeplanning.routes.Waypoint;
-import ie.ul.routeplanning.routes.data.SourceFactory;
-import ie.ul.routeplanning.routes.data.WaypointSource;
+import ie.ul.routeplanning.routes.waypoints.SourceFactory;
+import ie.ul.routeplanning.routes.waypoints.WaypointSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

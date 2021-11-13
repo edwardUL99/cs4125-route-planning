@@ -3,7 +3,7 @@ package ie.ul.routeplanning.services;
 import ie.ul.routeplanning.repositories.TransportMethodRepository;
 import ie.ul.routeplanning.repositories.WaypointRepository;
 import ie.ul.routeplanning.routes.Waypoint;
-import ie.ul.routeplanning.routes.data.SourceFactory;
+import ie.ul.routeplanning.routes.waypoints.SourceFactory;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.routes.graph.creation.BuilderException;
 import ie.ul.routeplanning.routes.graph.creation.BuilderFactory;
