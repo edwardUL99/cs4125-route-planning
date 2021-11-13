@@ -83,7 +83,9 @@ public abstract class PathFindingAlgorithm implements Algorithm<Route> {
     }
 
     /**
-     * Generate the adjacency list for the provided graph. It also uses the weight function to calculate the nodes cost
+     * Generate the adjacency list for the provided graph. It also uses the weight function to calculate the nodes cost.
+     * Any subclass of this algorithm that requires the concept of cost (i.e. shortest path), should use this
+     * function and the return value for path finding
      * @param graph the graph to generate the adjacency list for
      * @return adjacency list
      */
