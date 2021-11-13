@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Routes</title>
+    <title>Route</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
@@ -19,7 +19,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row align-items-center h-100">
+            <div th:with="distance=${route.calculateDistance()}" class="row align-items-center h-100">
                 <div class="col text-center">
                     <h5>Start</h5>
                     <p th:text="${route.getStart().name}"></p>
@@ -30,8 +30,22 @@
                 </div>
                 <div class="col text-center">
                     <h5>Distance</h5>
-                    <p><span th:text="${route.calculateDistance()}"></span> km</p>
+                    <p><span th:text="${distance}"></span> km</p>
                 </div>
+                <div class="col text-center">
+                    <h5>Average CO2 Emissions</h5>
+                    <p><span th:text="${route.calculateCO2Emissions()}"></span>g</p>
+                </div>
+                <div class="col text-center" th:with="time=${route.calculateTime()}">
+                    <h5>Average Duration</h5>
+                    <p><span th:text="${time.toHoursPart()}"></span> H <span th:text="${time.toMinutesPart()}"></span> Min</p>
+                </div>
+            </div>
+        </div>
+        <div th:if="${success != null}" class="row mt-5">
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
         <div class="card shadow px-5 mt-5 py-5">
@@ -46,6 +60,8 @@
                         <th scope="col">End</th>
                         <th scope="col">Distance</th>
                         <th scope="col">Transport Method</th>
+                        <th scope="col">Average CO2 Emissions</th>
+                        <th scope="col">Average Time</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,9 +71,20 @@
                         <td th:text="${leg.end.name}"></td>
                         <td><span th:text="${leg.calculateDistance()}"></span> km</td>
                         <td th:text="${leg.transportMethod.getName()}"></td>
+                        <td><span th:text="${leg.calculateCO2Emissions()}"></span>g</td>
+                        <td th:with="time=${leg.calculateTime()}">
+                            <p><span th:text="${time.toHoursPart()}"></span>H <span th:text="${time.toMinutesPart()}"> </span>Min</p>
+                        </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <div th:if="${route.isSaved()}" class="row text-end mt-2">
+            <form method="POST" th:action="@{/routes/saved}">
+                <input type="hidden" name="action" value="DELETE">
+                <input type="hidden" name="routeID" th:value="${route.getId()}">
+                <button class="btn btn-danger">Delete Route</button>
+            </form>
         </div>
     </div>
     <div th:unless="${route != null}">

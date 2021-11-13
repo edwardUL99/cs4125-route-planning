@@ -44,12 +44,19 @@
                         <input class="form-check-input" type="checkbox" th:checked="${ecoFriendly}" name="ecoFriendly">
                         <label class="form-check-label">Eco-Friendly Routes</label>
                     </div>
+                    <div class="col form-check">
+                        <input class="form-check-input" type="checkbox" th:checked="${time}" name="time">
+                        <label class="form-check-label">Quickest Time</label>
+                    </div>
                     <div class="col text-end">
                         <button class="btn btn-primary" id="generate-button">Generate</button>
                     </div>
                 </div>
             </form>
-            <div th:if="${error != null}" class="alert alert-danger w-50"><p th:text="${error}"></p></div>
+            <div th:if="${error != null}" class="alert alert-danger alert-dismissible w-50">
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         </div>
     </div>
     <div th:if="${error == null && bestRoute != null}" class="card shadow px-5 mt-5 mb-2 py-5 rounded">
@@ -73,7 +80,19 @@
                     <span th:unless="${numStops > 0}">Direct (no stops)</span>
                 </td>
                 <td><span th:text="${route.calculateDistance()}"></span> km</td>
-                <td><a th:href="@{'/route/' + ${route.getId()}}" class="btn btn-link">View Route</a></td>
+                <td>
+                    <div class="row" th:with="id=${route.getId()}">
+                        <div class="col">
+                            <a th:href="@{'/routes/' + ${id}}" class="btn btn-link">View Route</a>
+                        </div>
+                        <div class="col">
+                            <form method="POST" th:action="@{/routes/save_route}" th:id="${'save-' + id}">
+                                <input type="hidden" name="saveRouteID" th:value="${id}">
+                                <button class="btn btn-link">Save Route</button>
+                            </form>
+                        </div>
+                    </div>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -99,7 +118,19 @@
                         <span th:unless="${numStops > 0}">Direct (no stops)</span>
                     </td>
                     <td><span th:text="${route.calculateDistance()}"></span> km</td>
-                    <td><a th:href="@{'/route/' + ${route.getId()}}" class="btn btn-link">View Route</a></td>
+                    <td>
+                        <div class="row" th:with="id=${route.getId()}">
+                            <div class="col">
+                                <a th:href="@{'/routes/' + ${id}}" class="btn btn-link">View Route</a>
+                            </div>
+                            <div class="col">
+                                <form method="POST" th:action="@{/routes/save_route}" th:id="${'save-' + id}">
+                                    <input type="hidden" name="saveRouteID" th:value="${id}">
+                                    <button class="btn btn-link">Save Route</button>
+                                </form>
+                            </div>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -116,11 +147,6 @@
 <script>
     const startWaypoint = document.getElementById('startWaypoint');
     const endWaypoint = document.getElementById('endWaypoint');
-
-    var disabledMap = {
-        'startWaypoint': true,
-        'endWaypoint': true
-    }
 
     function flipInputs() {
         let start = startWaypoint.value;

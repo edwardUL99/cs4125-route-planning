@@ -18,7 +18,7 @@ public class Waypoint {
 	 * The waypoint ID
 	 */
 	@Id
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	//@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Long id;
 	/**
 	 * The name assigned to this waypoint
@@ -138,7 +138,7 @@ public class Waypoint {
 	 * @return true if this is the same waypoint as the the other based on coordinates
 	 */
 	public boolean isSameAs(Waypoint waypoint) {
-		return latitude.equals(waypoint.latitude) && longitude.equals(waypoint.longitude);
+		return name.equals(waypoint.name) && latitude.equals(waypoint.latitude) && longitude.equals(waypoint.longitude);
 	}
 
 	/**

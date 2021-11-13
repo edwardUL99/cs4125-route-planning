@@ -5,6 +5,7 @@ import ie.ul.routeplanning.routes.graph.GraphUtils;
 import ie.ul.routeplanning.transport.TransportMethod;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.util.Objects;
 
 /**
@@ -36,7 +37,7 @@ public class RouteLeg implements Edge {
 	/**
 	 * The name of the transport method taking this leg of the route
 	 */
-	@OneToOne(cascade=CascadeType.ALL)
+	@OneToOne(cascade=CascadeType.MERGE)
 	private TransportMethod transportMethod;
 	/**
 	 * A pre-defined distance for this edge. If null, the coordinate km distance will be used
@@ -160,6 +161,14 @@ public class RouteLeg implements Edge {
 	}
 
 	/**
+	 * Calculates the CO2 emissions for this route
+	 * @return the CO2 emissions for this route
+	 */
+	public double calculateCO2Emissions() {
+		return transportMethod.getCO2EmissionsPerKm() * calculateDistance();
+	}
+
+	/**
 	 * Calculate the distance from the start waypoint to end waypoint in kilometres by latitude and longitude
 	 * @return calculated distance
 	 */
@@ -171,11 +180,10 @@ public class RouteLeg implements Edge {
 	 * Calculate the time for this RouteLeg without any parameters
 	 * @return the time as a double
 	 */
-	public double calculateTime() {
-		double time = 0;
-		// TODO calculate the time
+	public Duration calculateTime() {
+		double time = calculateDistance() / transportMethod.getAverageSpeed();
 
-		return time;
+		return Duration.ofMinutes((long)(time * 60));
 	}
 
 	/**

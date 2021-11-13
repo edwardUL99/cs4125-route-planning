@@ -1,15 +1,14 @@
 package ie.ul.routeplanning.controllers;
 
-import ie.ul.routeplanning.constants.Constant;
-import ie.ul.routeplanning.repositories.RouteRepository;
-import ie.ul.routeplanning.repositories.WaypointRepository;
 import ie.ul.routeplanning.routes.Route;
 import ie.ul.routeplanning.routes.Waypoint;
-import ie.ul.routeplanning.routes.data.SourceFactory;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.routes.graph.creation.BuilderException;
-import ie.ul.routeplanning.routes.graph.creation.BuilderFactory;
+import ie.ul.routeplanning.services.GraphService;
 import ie.ul.routeplanning.services.RouteService;
+import ie.ul.routeplanning.services.SecurityService;
+import ie.ul.routeplanning.services.UserService;
+import ie.ul.routeplanning.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,9 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The controller class for handling routes
@@ -28,16 +25,10 @@ import java.util.Optional;
 @Controller
 public class RouteController {
     /**
-     * Our repository for saving and loading waypoints
+     * The graph service for loading our graph
      */
     @Autowired
-    private WaypointRepository waypointRepository;
-
-    /**
-     * Our repository for saving and loading routes
-     */
-    @Autowired
-    private RouteRepository routeRepository;
+    private GraphService graphService;
 
     /**
      * Our route service for generating routes
@@ -46,32 +37,46 @@ public class RouteController {
     private RouteService routeService;
 
     /**
-     * Lazily initialises the graph
-     * @throws BuilderException if an exception occurs building the graph
+     * Our user service for finding users
      */
-    private Graph getGraph() throws BuilderException {
-        List<Waypoint> waypoints = new ArrayList<>();
-        waypointRepository.findAll().forEach(waypoints::add);
-        return BuilderFactory.fromFile("edges.json", SourceFactory.fromList(waypoints)).buildGraph();
-    }
+    @Autowired
+    private UserService userService;
+
+    /**
+     * Our security service for determining users
+     */
+    @Autowired
+    private SecurityService securityService;
 
     /**
      * The home page for the routes
      * @param model the model for the view
+     * @param response the response to the request
      * @return the name of the routes page
      */
     @RequestMapping(value="/routes", method=RequestMethod.GET)
-    public String routesHome(Model model) {
+    public String routesHome(Model model, HttpServletResponse response) {
+        if (model.asMap().size() != 0) {
+            response.addHeader("Cache-Control", "Public");
+        }
+
         return "routes";
     }
 
     /**
-     * Find a waypoint with the provided name
-     * @param name the name of the waypoint
-     * @return an optional containing the waypoint, empty if not found
+     * Loads and returns the graph
+     * @return the loaded graph or null if an error occurs
      */
-    private Optional<Waypoint> findWaypoint(String name) {
-        return waypointRepository.findByName(name).stream().findFirst();
+    private Graph loadGraph() {
+        Graph graph = null;
+
+        try {
+            graph = graphService.loadGraph();
+        } catch (BuilderException ex) {
+            ex.printStackTrace();
+        }
+
+        return graph;
     }
 
     /**
@@ -79,16 +84,18 @@ public class RouteController {
      * @param startWaypoint the name of the start waypoint
      * @param endWaypoint the name of the end waypoint
      * @param ecoFriendly true if the routes are to be filtered by eco friendliness
+     * @param time        true if time should be factored into the route duration
      * @return the name of the view
      */
     @RequestMapping(value="/routes", method=RequestMethod.POST)
     public ModelAndView generateRoutes(RedirectAttributes redirectAttributes, @RequestParam String startWaypoint, @RequestParam String endWaypoint,
-                                       @RequestParam(required=false) boolean ecoFriendly) throws BuilderException {
+                                       @RequestParam(required=false) boolean ecoFriendly, @RequestParam(required=false) boolean time) {
         RouteService.RouteParameters parameters = routeService.parseParameters(startWaypoint, endWaypoint);
 
         redirectAttributes.addFlashAttribute("startWaypoint", startWaypoint);
         redirectAttributes.addFlashAttribute("endWaypoint", endWaypoint);
         redirectAttributes.addFlashAttribute("ecoFriendly", ecoFriendly);
+        redirectAttributes.addFlashAttribute("time", time);
 
         ModelAndView modelAndView = new ModelAndView();
 
@@ -96,37 +103,24 @@ public class RouteController {
             Waypoint start = parameters.getStart();
             Waypoint end = parameters.getEnd();
 
-            List<Route> routes = routeService.generateRoutes(getGraph(), start, end, ecoFriendly);
+            Graph graph = loadGraph();
 
-            routeRepository.saveAll(routes);
+            if (graph != null) {
+                List<Route> routes = routeService.generateRoutes(graph, start, end, ecoFriendly, time);
 
-            Route bestRoute = (routes.size() == 0) ? null:routes.remove(0);
+                Route bestRoute = (routes.size() == 0) ? null : routes.remove(0);
 
-            redirectAttributes.addFlashAttribute("bestRoute", bestRoute);
-            redirectAttributes.addFlashAttribute("routes", routes);
-
-            modelAndView.setViewName("redirect:/routes/generated");
+                redirectAttributes.addFlashAttribute("bestRoute", bestRoute);
+                redirectAttributes.addFlashAttribute("routes", routes);
+            } else {
+                redirectAttributes.addFlashAttribute("error", "An error occurred generating routes, please try again");
+            }
         } else {
             redirectAttributes.addFlashAttribute("error", parameters.getError());
-            modelAndView.setViewName("redirect:/routes");
         }
+        modelAndView.setViewName("redirect:/routes");
 
         return modelAndView;
-    }
-
-    /**
-     * Views the generated routes
-     * @param model the model for holding the attributes
-     * @return the name of the view
-     */
-    @RequestMapping("/routes/generated")
-    public String viewGeneratedRoutes(Model model, HttpServletResponse response) {
-        if (model.asMap().size() == 0) {
-            return "redirect:/routes";
-        } else {
-            response.addHeader("Cache-Control", "Public");
-            return "routes";
-        }
     }
 
     /**
@@ -135,11 +129,85 @@ public class RouteController {
      * @param routeID the ID of the route passed in on the request
      * @return the name of the view to load
      */
-    @RequestMapping("/route/{routeID}")
+    @RequestMapping("/routes/{routeID}")
     public String getRoute(Model model, @PathVariable Long routeID) {
-        Optional<Route> route = routeRepository.findById(routeID);
-        model.addAttribute("route", route.orElse(null));
+        Route route = routeService.getRoute(routeID);
+        model.addAttribute("route", route);
 
         return "route";
+    }
+
+    /**
+     * Saves the route to the user's account
+     * @param redirectAttributes the attributes to add redirected values to
+     * @param saveRouteID the ID of the route to save
+     * @return the redirected view
+     */
+    @RequestMapping(value="/routes/save_route", method=RequestMethod.POST)
+    public ModelAndView saveRoute(RedirectAttributes redirectAttributes, @RequestParam Long saveRouteID) {
+        Route route = routeService.getRoute(saveRouteID);
+
+        ModelAndView modelAndView = new ModelAndView();
+
+        if (route == null) {
+            redirectAttributes.addFlashAttribute("error", "The route does not exist");
+            modelAndView.setViewName("redirect:/routes");
+        } else {
+            String username = securityService.getUsername();
+
+            if (username != null) {
+                User user = userService.findByUsername(username);
+                routeService.saveRoute(user, route);
+
+                redirectAttributes.addFlashAttribute("success", "Route has been saved successfully");
+
+                modelAndView.setViewName("redirect:/routes/" + saveRouteID);
+            } else {
+                redirectAttributes.addFlashAttribute("error", "You must be a registered and logged in user to save a route");
+                modelAndView.setViewName("redirect:/routes");
+            }
+        }
+
+        return modelAndView;
+    }
+
+    /**
+     * Retrieves the saved routes for the user
+     * @param model the model to add attributes to
+     * @return the name of the view
+     */
+    @RequestMapping(value="/routes/saved", method=RequestMethod.GET)
+    public String savedRoutes(Model model) {
+        String username = securityService.getUsername();
+
+        if (username != null) {
+            User user = userService.findByUsername(username);
+            List<Route> savedRoutes = routeService.getSavedRoutes(user);
+
+            model.addAttribute("user", user);
+            model.addAttribute("routes", savedRoutes);
+
+            return "saved_routes";
+        } else {
+            return "redirect:/";
+        }
+    }
+
+    /**
+     * Perform an action on the provided saved route
+     * @param model the model for the view
+     * @param action the action to perform on the saved route
+     * @param routeID the ID of the route to perform the action on
+     * @return the name of the view
+     */
+    @RequestMapping(value="/routes/saved", method=RequestMethod.POST)
+    public String savedRouteAction(Model model, @RequestParam String action, @RequestParam Long routeID) {
+        action = action.toUpperCase();
+
+        if (action.equals("DELETE")) {
+            routeService.deleteRoute(routeID);
+        }
+
+        return "redirect:/routes/saved";
     }
 }

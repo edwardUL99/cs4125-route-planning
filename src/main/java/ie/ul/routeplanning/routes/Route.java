@@ -1,6 +1,7 @@
 package ie.ul.routeplanning.routes;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,23 +121,33 @@ public class Route {
      * Calculates the total time taken to reach from the initial to the final point.
      * @return the total time taken to cover all the route legs
      */
-    public double calculateTime() {
-        double totalTime = 0;
-        for(RouteLeg routeLeg : routeLegs) {
-            totalTime += routeLeg.calculateTime();
-        }
+    public Duration calculateTime() {
+        Duration duration = Duration.ofMillis(0);
 
-        return totalTime;
+        for (RouteLeg routeLeg : routeLegs)
+            duration = duration.plus(routeLeg.calculateTime());
+
+        return duration;
     }
 
     /**
-     * A function to standardize the time taken to travel from initial to final point.
-     * @param timeValue time in double format
-     * @return time in String format
+     * Calculates the average co2 emissions for this route
+     * @return the calculated co2 emissions
      */
-   public String standardizeTime(double timeValue) {
-        String timeString = "";
-        //TODO: return the time as a String
-        return timeString;
+    public double calculateCO2Emissions() {
+        double emissions = 0.0;
+
+        for (RouteLeg routeLeg : routeLegs)
+            emissions += routeLeg.calculateCO2Emissions();
+
+        return emissions;
+    }
+
+    /**
+     * A method to determine if this route has been saved on a user's account or not
+     * @return true if a saved route, false if not
+     */
+    public boolean isSaved() {
+        return false;
     }
 }

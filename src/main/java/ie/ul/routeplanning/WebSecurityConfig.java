@@ -32,8 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         if (!SecurityService.BYPASS_AUTH) {
             http.authorizeRequests()
-                    .antMatchers("/css/**", "/js/**", "/registration").permitAll()
-                    .anyRequest().authenticated()
+                    .antMatchers("/resources/**", "/css/**", "/js/**", "/registration").permitAll().anyRequest()
+                    .authenticated()
                     .and()
                     .formLogin()
                     .loginPage("/login")

@@ -1,7 +1,6 @@
 package ie.ul.routeplanning.transport;
 
 import javax.persistence.*;
-import java.time.Duration;
 import java.util.Objects;
 
 /**
@@ -83,16 +82,10 @@ public abstract class TransportMethod {
 	public abstract double getCO2EmissionsPerKm();
 
 	/**
-	 * Gets the average duration per kilometre for this transport method
-	 * @return the average duration it takes to travel a kilometre by this transport method
-	 */
-	public abstract Duration getTimePerKm();
-
-	/**
 	 * Gets the average speed per kilometre for this transport method
 	 * @return average speed in km/h
 	 */
-	public abstract double getAverageSpeedPerKm();
+	public abstract double getAverageSpeed();
 
 	/**
 	 * Checks if this TransportMethod equals the provided one
@@ -107,8 +100,7 @@ public abstract class TransportMethod {
 		return Objects.equals(getId(), that.getId()) &&
 				Objects.equals(getName(), that.getName()) &&
 				Objects.equals(getCO2EmissionsPerKm(), that.getCO2EmissionsPerKm()) &&
-				Objects.equals(getAverageSpeedPerKm(), that.getCO2EmissionsPerKm()) &&
-				Objects.equals(getTimePerKm(), that.getTimePerKm());
+				Objects.equals(getAverageSpeed(), that.getCO2EmissionsPerKm());
 	}
 
 	/**
@@ -117,6 +109,6 @@ public abstract class TransportMethod {
 	 */
 	@Override
 	public int hashCode() {
-		return Objects.hash(getId(), getName(), getCO2EmissionsPerKm(), getAverageSpeedPerKm(), getTimePerKm());
+		return Objects.hash(getId(), getName(), getCO2EmissionsPerKm(), getAverageSpeed());
 	}
 }
