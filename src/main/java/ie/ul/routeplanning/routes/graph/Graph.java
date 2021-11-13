@@ -84,6 +84,14 @@ public class Graph {
     }
 
     /**
+     * Removes the provided edge. Uses the edge's start waypoint to find the list of edges to remove it from
+     * @param edge the edge to remove
+     */
+    public void removeEdge(Edge edge) {
+        edges.get(edge.getStart()).remove(edge);
+    }
+
+    /**
      * Determines if the graph contains an edge from u to v.
      * @param edge the edge with vertex u and v
      * @return true if the graph contains u and v and there is an edge between them

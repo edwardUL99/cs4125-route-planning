@@ -75,6 +75,6 @@ public class TopKAlgorithm extends DijkstraAlgorithm {
      * @param route the route to remove the edge from
      */
     public static void disconnectRouteEdge(Graph graph, Route route) {
-        graph.getNeighbours(route.getStart()).remove(route.getRouteLegs().get(0));
+        graph.removeEdge(route.getRouteLegs().get(0));
     }
 }
