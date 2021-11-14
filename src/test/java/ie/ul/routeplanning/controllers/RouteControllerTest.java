@@ -6,7 +6,10 @@ import ie.ul.routeplanning.routes.Waypoint;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.services.GraphService;
 import ie.ul.routeplanning.services.RouteService;
+import ie.ul.routeplanning.services.SecurityService;
+import ie.ul.routeplanning.services.UserService;
 import ie.ul.routeplanning.transport.TransportFactory;
+import ie.ul.routeplanning.users.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -18,9 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.verify;
@@ -53,13 +54,19 @@ public class RouteControllerTest {
     @MockBean
     private GraphService graphServiceMock;
     /**
+     * The mocked security service
+     */
+    @MockBean
+    private SecurityService securityServiceMock;
+    /**
+     * The mocked user service
+     */
+    @MockBean
+    private UserService userServiceMock;
+    /**
      * Array of waypoints used for testing purposes
      */
     private Waypoint[] TEST_WAYPOINTS;
-    /**
-     * Array of edges used for testing purposes
-     */
-    private RouteLeg[] TEST_LEGS;
     /**
      * A graph we use for testing purposes
      */
@@ -107,7 +114,6 @@ public class RouteControllerTest {
 
         TEST_ROUTES = routes;
         TEST_WAYPOINTS = waypoints;
-        TEST_LEGS = edges;
     }
 
     /**
@@ -217,5 +223,73 @@ public class RouteControllerTest {
                 .andExpect(model().attribute("route", is(route)));
 
         verify(routeServiceMock).getRoute(1L);
+    }
+
+    /**
+     * This tests the successful saving of a route
+     */
+    @Test
+    void shouldSaveRoute() throws Exception {
+        long routeId = 1;
+        Route route = TEST_ROUTES.get(0);
+        String username = "testUser";
+        User user = new User();
+        user.setUsername(username);
+
+        when(routeServiceMock.getRoute(routeId))
+                .thenReturn(route);
+        when(securityServiceMock.getUsername())
+                .thenReturn(username);
+        when(userServiceMock.findByUsername(username))
+                .thenReturn(user);
+
+        mockMvc.perform(post("/routes/save_route").param("saveRouteID", "" + routeId))
+                .andExpect(status().is(302))
+                .andExpect(flash().attribute("success", "Route has been saved successfully"))
+                .andExpect(redirectedUrl("/routes/" + routeId));
+
+        verify(routeServiceMock).getRoute(routeId);
+        verify(securityServiceMock).getUsername();
+        verify(userServiceMock).findByUsername(username);
+    }
+
+    /**
+     * This tests what should happen if the route doesn't exist
+     */
+    @Test
+    void shouldNotSaveIfRouteIsNull() throws Exception {
+        long routeId = 1;
+
+        when(routeServiceMock.getRoute(routeId))
+                .thenReturn(null);
+
+        mockMvc.perform(post("/routes/save_route").param("saveRouteID", "" + routeId))
+                .andExpect(status().is(302))
+                .andExpect(flash().attribute("error", "The route does not exist"))
+                .andExpect(redirectedUrl("/routes"));
+
+        verify(routeServiceMock).getRoute(routeId);
+    }
+
+    /**
+     * This tests that an error occurs if the username is null as user is not logged in or anonymous
+     */
+    @Test
+    void shouldNotSaveWhenUsernameIsNull() throws Exception {
+        long routeId = 1;
+        Route route = TEST_ROUTES.get(0);
+
+        when(routeServiceMock.getRoute(routeId))
+                .thenReturn(route);
+        when(securityServiceMock.getUsername())
+                .thenReturn(null);
+
+        mockMvc.perform(post("/routes/save_route").param("saveRouteID", "" + routeId))
+                .andExpect(status().is(302))
+                .andExpect(flash().attribute("error", "You must be a registered and logged in user to save a route"))
+                .andExpect(redirectedUrl("/routes"));
+
+        verify(routeServiceMock).getRoute(routeId);
+        verify(securityServiceMock).getUsername();
     }
 }
