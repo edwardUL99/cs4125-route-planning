@@ -292,4 +292,46 @@ public class RouteControllerTest {
         verify(routeServiceMock).getRoute(routeId);
         verify(securityServiceMock).getUsername();
     }
+
+    /**
+     * This test tests the navigation to /routes/saved when a user is successfully logged in
+     */
+    @Test
+    void shouldDisplaySavedRoutes() throws Exception {
+        String username = "testuser";
+        User user = new User();
+        user.setUsername(username);
+
+        when(securityServiceMock.getUsername())
+                .thenReturn(username);
+        when(userServiceMock.findByUsername(username))
+                .thenReturn(user);
+        when(routeServiceMock.getSavedRoutes(user))
+                .thenReturn(TEST_ROUTES);
+
+        mockMvc.perform(get("/routes/saved"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("saved_routes"))
+                .andExpect(model().attribute("user", is(user)))
+                .andExpect(model().attribute("routes", is(TEST_ROUTES)));
+
+        verify(securityServiceMock).getUsername();
+        verify(userServiceMock).findByUsername(username);
+        verify(routeServiceMock).getSavedRoutes(user);
+    }
+
+    /**
+     * Tests that if /routes/saved is navigated to while not logged in or anonymous, the user will be redirected
+     */
+    @Test
+    void shouldRedirectOnSavedRoutesNotLoggedIn() throws Exception {
+        when(securityServiceMock.getUsername())
+                .thenReturn(null);
+
+        mockMvc.perform(get("/routes/saved"))
+                .andExpect(status().is(302))
+                .andExpect(redirectedUrl("/"));
+
+        verify(securityServiceMock).getUsername();
+    }
 }
