@@ -144,7 +144,7 @@ public interface RouteService {
          * @param error the error message
          * @return the created instance
          */
-        protected static RouteParameters createInvalid(String error) {
+        public static RouteParameters createInvalid(String error) {
             return new RouteParameters(false, error, null, null);
         }
 
@@ -154,7 +154,7 @@ public interface RouteService {
          * @param end the end waypoint
          * @return the created instance
          */
-        protected static RouteParameters createValid(Waypoint start, Waypoint end) {
+        public static RouteParameters createValid(Waypoint start, Waypoint end) {
             return new RouteParameters(true, null, start, end);
         }
     }
