@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Fragments - DO NOT USE AS A VIEW</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="navbar">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" th:href="@{/}">Route Planning System</a>
+        </div>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li><a class="nav-link" th:href="@{/routes}">Route Generation</a></li>
+            <li><a class="nav-link" th:href="@{/routes/saved}">Saved Routes</a></li>
+        </ul>
+    </div>
+</nav>
+</body>
+</html>
