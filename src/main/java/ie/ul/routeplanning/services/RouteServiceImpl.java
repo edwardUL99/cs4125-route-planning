@@ -120,42 +120,4 @@ public class RouteServiceImpl implements RouteService {
     private Optional<Waypoint> findWaypoint(String name) {
         return waypointRepository.findByName(name).stream().findFirst();
     }
-
-    /**
-     * Validates and parses the parameters for route generation. If not valid, an "error" flash attribute is set in the model and a
-     * validated parameters object is returned with invalid as true
-     *
-     * @param startWaypoint the name of the start waypoint
-     * @param endWaypoint   the name of the end waypoint
-     * @return an instance of ValidatedParameters with the new parameters and found waypoints
-     */
-    @Override
-    public RouteParameters parseParameters(String startWaypoint, String endWaypoint) {
-        startWaypoint = Constant.capitalise(startWaypoint);
-        endWaypoint = Constant.capitalise(endWaypoint);
-
-        Optional<Waypoint> startOpt = findWaypoint(startWaypoint);
-        Optional<Waypoint> endOpt = findWaypoint(endWaypoint);
-        Waypoint start = null, end = null;
-
-        String error;
-
-        if (startWaypoint.equals(endWaypoint)) {
-            error = "You cannot create a route with the same start and end waypoints";
-        } else if (!startOpt.isPresent()) {
-            error = String.format("No start waypoint found with name %s", startWaypoint);
-        } else if (!endOpt.isPresent()) {
-            error = String.format("No end waypoint found with name %s", endWaypoint);
-        } else {
-            start = startOpt.get();
-            end = endOpt.get();
-            error = null;
-        }
-
-        if (error != null) {
-            return RouteParameters.createInvalid(error);
-        } else {
-            return RouteParameters.createValid(start, end);
-        }
-    }
 }

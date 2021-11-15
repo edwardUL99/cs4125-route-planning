@@ -1,13 +1,12 @@
 package ie.ul.routeplanning.controllers;
 
+import ie.ul.routeplanning.constants.Constant;
+import ie.ul.routeplanning.repositories.WaypointRepository;
 import ie.ul.routeplanning.routes.Route;
 import ie.ul.routeplanning.routes.Waypoint;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.routes.graph.creation.BuilderException;
-import ie.ul.routeplanning.services.GraphService;
-import ie.ul.routeplanning.services.RouteService;
-import ie.ul.routeplanning.services.SecurityService;
-import ie.ul.routeplanning.services.UserService;
+import ie.ul.routeplanning.services.*;
 import ie.ul.routeplanning.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +17,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The controller class for handling routes
@@ -35,6 +36,12 @@ public class RouteController {
      */
     @Autowired
     private RouteService routeService;
+
+    /**
+     * Our waypoint service for retrieving waypoints
+     */
+    @Autowired
+    private WaypointService waypointService;
 
     /**
      * Our user service for finding users
@@ -80,6 +87,39 @@ public class RouteController {
     }
 
     /**
+     * Validates the start and end waypoints, setting the appropriate references
+     * @param startWaypoint the reference containing the start waypoint name. This method capitalises the waypoint name, so changes the reference
+     * @param endWaypoint the reference containing the end waypoint name. Does same processing as start
+     * @param error the reference containing error message. If this is null, no error occurred
+     * @param start the reference which will after executing this method, contain the start waypoint
+     * @param end the reference that will after executing this method, contain the end waypoint
+     */
+    private void validateParameters(AtomicReference<String> startWaypoint, AtomicReference<String> endWaypoint, AtomicReference<String> error,
+                                    AtomicReference<Waypoint> start, AtomicReference<Waypoint> end) {
+        String startWaypointName = startWaypoint.get();
+        String endWaypointName = endWaypoint.get();
+
+        startWaypointName = Constant.capitalise(startWaypointName);
+        endWaypointName = Constant.capitalise(endWaypointName);
+
+        Waypoint startWaypointFound = waypointService.findWaypoint(startWaypointName);
+        Waypoint endWaypointFound = waypointService.findWaypoint(endWaypointName);
+
+        if (startWaypointName.equals(endWaypointName)) {
+            error.set("You cannot create a route with the same start and end waypoints");
+        } else if (startWaypointFound == null) {
+            error.set(String.format("No start waypoint found with name %s", startWaypoint));
+        } else if (endWaypointFound == null) {
+            error.set(String.format("No end waypoint found with name %s", endWaypoint));
+        } else {
+            startWaypoint.set(startWaypointName);
+            endWaypoint.set(endWaypointName);
+            start.set(startWaypointFound);
+            end.set(endWaypointFound);
+        }
+    }
+
+    /**
      * The handler for when route generation is requested
      * @param startWaypoint the name of the start waypoint
      * @param endWaypoint the name of the end waypoint
@@ -90,18 +130,26 @@ public class RouteController {
     @RequestMapping(value="/routes", method=RequestMethod.POST)
     public ModelAndView generateRoutes(RedirectAttributes redirectAttributes, @RequestParam String startWaypoint, @RequestParam String endWaypoint,
                                        @RequestParam(required=false) boolean ecoFriendly, @RequestParam(required=false) boolean time) {
-        RouteService.RouteParameters parameters = routeService.parseParameters(startWaypoint, endWaypoint);
+        AtomicReference<String> startWayRef = new AtomicReference<>(startWaypoint);
+        AtomicReference<String> endWayRef = new AtomicReference<>(endWaypoint);
+        AtomicReference<String> errorRef = new AtomicReference<>();
+        AtomicReference<Waypoint> startRef = new AtomicReference<>();
+        AtomicReference<Waypoint> endRef = new AtomicReference<>();
 
-        redirectAttributes.addFlashAttribute("startWaypoint", startWaypoint);
-        redirectAttributes.addFlashAttribute("endWaypoint", endWaypoint);
+        validateParameters(startWayRef, endWayRef, errorRef, startRef, endRef);
+
+        redirectAttributes.addFlashAttribute("startWaypoint", startWayRef.get());
+        redirectAttributes.addFlashAttribute("endWaypoint", endWayRef.get());
         redirectAttributes.addFlashAttribute("ecoFriendly", ecoFriendly);
         redirectAttributes.addFlashAttribute("time", time);
 
         ModelAndView modelAndView = new ModelAndView();
 
-        if (parameters.isValid()) {
-            Waypoint start = parameters.getStart();
-            Waypoint end = parameters.getEnd();
+        String error = errorRef.get();
+
+        if (error == null) {
+            Waypoint start = startRef.get();
+            Waypoint end = endRef.get();
 
             Graph graph = loadGraph();
 
@@ -116,7 +164,7 @@ public class RouteController {
                 redirectAttributes.addFlashAttribute("error", "An error occurred generating routes, please try again");
             }
         } else {
-            redirectAttributes.addFlashAttribute("error", parameters.getError());
+            redirectAttributes.addFlashAttribute("error", error);
         }
         modelAndView.setViewName("redirect:/routes");
 

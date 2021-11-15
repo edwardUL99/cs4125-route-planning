@@ -4,10 +4,7 @@ import ie.ul.routeplanning.routes.Route;
 import ie.ul.routeplanning.routes.RouteLeg;
 import ie.ul.routeplanning.routes.Waypoint;
 import ie.ul.routeplanning.routes.graph.Graph;
-import ie.ul.routeplanning.services.GraphService;
-import ie.ul.routeplanning.services.RouteService;
-import ie.ul.routeplanning.services.SecurityService;
-import ie.ul.routeplanning.services.UserService;
+import ie.ul.routeplanning.services.*;
 import ie.ul.routeplanning.transport.TransportFactory;
 import ie.ul.routeplanning.users.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +45,11 @@ public class RouteControllerTest {
      */
     @MockBean
     private RouteService routeServiceMock;
+    /**
+     * A mock waypoint service
+     */
+    @MockBean
+    private WaypointService waypointServiceMock;
     /**
      * The mocked graph service
      */
@@ -135,12 +137,12 @@ public class RouteControllerTest {
         String startWaypointName = startWaypoint.getName();
         String endWaypointName = endWaypoint.getName();
 
-        RouteService.RouteParameters parameters = RouteService.RouteParameters.createValid(startWaypoint, endWaypoint);
-
         when(routeServiceMock.generateRoutes(TEST_GRAPH, startWaypoint, endWaypoint, false, false))
                 .thenReturn(TEST_ROUTES);
-        when(routeServiceMock.parseParameters(startWaypointName, endWaypointName))
-                .thenReturn(parameters);
+        when(waypointServiceMock.findWaypoint(startWaypointName))
+                .thenReturn(startWaypoint);
+        when(waypointServiceMock.findWaypoint(endWaypointName))
+                .thenReturn(endWaypoint);
         when(graphServiceMock.loadGraph())
                 .thenReturn(TEST_GRAPH);
 
@@ -164,6 +166,8 @@ public class RouteControllerTest {
 
         verify(routeServiceMock).generateRoutes(TEST_GRAPH, startWaypoint, endWaypoint, false, false);
         verify(graphServiceMock).loadGraph();
+        verify(waypointServiceMock).findWaypoint(startWaypointName);
+        verify(waypointServiceMock).findWaypoint(endWaypointName);
     }
 
     /**
@@ -177,13 +181,12 @@ public class RouteControllerTest {
         String endWaypointName = endWaypoint.getName();
 
         TEST_ROUTES.remove(1);
-
-        RouteService.RouteParameters parameters = RouteService.RouteParameters.createValid(startWaypoint, endWaypoint);
-
         when(routeServiceMock.generateRoutes(TEST_GRAPH, startWaypoint, endWaypoint, false, false))
                 .thenReturn(TEST_ROUTES);
-        when(routeServiceMock.parseParameters(startWaypointName, endWaypointName))
-                .thenReturn(parameters);
+        when(waypointServiceMock.findWaypoint(startWaypointName))
+                .thenReturn(startWaypoint);
+        when(waypointServiceMock.findWaypoint(endWaypointName))
+                .thenReturn(endWaypoint);
         when(graphServiceMock.loadGraph())
                 .thenReturn(TEST_GRAPH);
 
@@ -205,6 +208,8 @@ public class RouteControllerTest {
 
         verify(routeServiceMock).generateRoutes(TEST_GRAPH, startWaypoint, endWaypoint, false, false);
         verify(graphServiceMock).loadGraph();
+        verify(waypointServiceMock).findWaypoint(startWaypointName);
+        verify(waypointServiceMock).findWaypoint(endWaypointName);
     }
 
     /**
