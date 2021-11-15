@@ -17,7 +17,7 @@ public interface RouteRepository extends CrudRepository<Route, Long> {
      * @param username the username to find saved routes for
      * @return the list of saved routes
      */
-    @Query("SELECT r FROM Route r JOIN User u ON r.user = u.id WHERE u.username = ?1 AND saved = True")
+    @Query("SELECT r FROM SavedRoute r JOIN User u ON r.user = u WHERE u.username = ?1 AND r.saved = True")
     List<SavedRoute> findSavedRoutesByUsername(String username);
 
     /**
@@ -26,6 +26,6 @@ public interface RouteRepository extends CrudRepository<Route, Long> {
      * @param routeId the ID of the route that may have been saved
      * @return the saved route instance or empty optional if not found
      */
-    @Query("SELECT r FROM Route r JOIN User u ON r.user = u.id WHERE u.username = ?1 AND saved = True AND savedRoute = ?2")
+    @Query("SELECT r FROM SavedRoute r JOIN User u ON r.user = u WHERE u.username = ?1 AND r.saved = True AND r.savedRoute.id = ?2")
     Optional<SavedRoute> findSavedRouteByUserAndRoute(String username, Long routeId);
 }
