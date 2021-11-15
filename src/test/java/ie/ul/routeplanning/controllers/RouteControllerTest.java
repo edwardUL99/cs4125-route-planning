@@ -111,10 +111,12 @@ public class RouteControllerTest {
         List<Route> routes = new ArrayList<>();
 
         Route route = new Route();
+        route.setId(1L);
         route.addRouteLeg(edges[0]);
         routes.add(route);
 
         route = new Route();
+        route.setId(2L);
         route.addRouteLeg(edges[1]);
         route.addRouteLeg((RouteLeg)edges[2].reverse());
         routes.add(route);
@@ -330,7 +332,7 @@ public class RouteControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("saved_routes"))
                 .andExpect(model().attribute("user", is(user)))
-                .andExpect(model().attribute("routes", is(TEST_ROUTES)));
+                .andExpect(model().attribute("routes", is(TEST_SAVED_ROUTES)));
 
         verify(securityServiceMock).getUsername();
         verify(userServiceMock).findByUsername(username);
