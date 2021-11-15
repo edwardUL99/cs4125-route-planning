@@ -14,7 +14,7 @@ public class Route {
      * The ID of this Route
      */
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     /**
      * A Route will have a list of one or more RouteLeg objects.

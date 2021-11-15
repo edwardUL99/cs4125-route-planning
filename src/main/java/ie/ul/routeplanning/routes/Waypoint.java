@@ -10,15 +10,11 @@ import java.util.Objects;
  * non-deterministic
  */
 @Entity
-@Table(uniqueConstraints = {
-		@UniqueConstraint(columnNames = {"latitude", "longitude"})
-})
 public class Waypoint {
 	/**
 	 * The waypoint ID
 	 */
 	@Id
-	//@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Long id;
 	/**
 	 * The name assigned to this waypoint

@@ -1,6 +1,7 @@
 package ie.ul.routeplanning.services;
 
 import ie.ul.routeplanning.routes.Route;
+import ie.ul.routeplanning.routes.SavedRoute;
 import ie.ul.routeplanning.routes.Waypoint;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.users.User;
@@ -48,5 +49,5 @@ public interface RouteService {
      * @param user the user to retrieve saved routes for
      * @return the list of saved routes for the provided user
      */
-    List<Route> getSavedRoutes(User user);
+    List<SavedRoute> getSavedRoutes(User user);
 }

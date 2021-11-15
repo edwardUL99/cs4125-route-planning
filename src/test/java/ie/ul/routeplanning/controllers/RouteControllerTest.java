@@ -2,6 +2,7 @@ package ie.ul.routeplanning.controllers;
 
 import ie.ul.routeplanning.routes.Route;
 import ie.ul.routeplanning.routes.RouteLeg;
+import ie.ul.routeplanning.routes.SavedRoute;
 import ie.ul.routeplanning.routes.Waypoint;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.services.*;
@@ -77,6 +78,10 @@ public class RouteControllerTest {
      * A route result used for testing purposes
      */
     private List<Route> TEST_ROUTES;
+    /**
+     * Testing saved routes
+     */
+    private List<SavedRoute> TEST_SAVED_ROUTES;
 
     /**
      * Initialises the test objects
@@ -116,6 +121,13 @@ public class RouteControllerTest {
 
         TEST_ROUTES = routes;
         TEST_WAYPOINTS = waypoints;
+
+        TEST_SAVED_ROUTES = new ArrayList<>();
+
+        User user = new User();
+        user.setUsername("testUser");
+        SavedRoute savedRoute = new SavedRoute(3L, user, TEST_ROUTES.get(0));
+        TEST_SAVED_ROUTES.add(savedRoute);
     }
 
     /**
@@ -312,7 +324,7 @@ public class RouteControllerTest {
         when(userServiceMock.findByUsername(username))
                 .thenReturn(user);
         when(routeServiceMock.getSavedRoutes(user))
-                .thenReturn(TEST_ROUTES);
+                .thenReturn(TEST_SAVED_ROUTES);
 
         mockMvc.perform(get("/routes/saved"))
                 .andExpect(status().isOk())

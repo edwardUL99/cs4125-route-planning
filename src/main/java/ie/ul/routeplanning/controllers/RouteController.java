@@ -3,6 +3,7 @@ package ie.ul.routeplanning.controllers;
 import ie.ul.routeplanning.constants.Constant;
 import ie.ul.routeplanning.repositories.WaypointRepository;
 import ie.ul.routeplanning.routes.Route;
+import ie.ul.routeplanning.routes.SavedRoute;
 import ie.ul.routeplanning.routes.Waypoint;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.routes.graph.creation.BuilderException;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * The controller class for handling routes
@@ -180,6 +182,12 @@ public class RouteController {
     @RequestMapping("/routes/{routeID}")
     public String getRoute(Model model, @PathVariable Long routeID) {
         Route route = routeService.getRoute(routeID);
+
+        if (route.isSaved()) {
+            model.addAttribute("savedRoute", route);
+            route = ((SavedRoute) route).getSavedRoute();
+        }
+
         model.addAttribute("route", route);
 
         return "route";
@@ -230,7 +238,7 @@ public class RouteController {
 
         if (username != null) {
             User user = userService.findByUsername(username);
-            List<Route> savedRoutes = routeService.getSavedRoutes(user);
+            List<SavedRoute> savedRoutes = routeService.getSavedRoutes(user);
 
             model.addAttribute("user", user);
             model.addAttribute("routes", savedRoutes);

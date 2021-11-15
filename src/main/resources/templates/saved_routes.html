@@ -35,14 +35,14 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="route : ${routes}">
+                <tr th:each="savedRoute : ${routes}" th:with="route=${savedRoute.getSavedRoute()}">
                     <td th:text="${route.getStart().name + ' to ' + route.getEnd().name}"></td>
                     <td th:with="numStops=${route.getNumberStops()}">
                         <p th:if="${numStops > 0}"><span th:text="${numStops}"></span> stop(s)</p>
                         <span th:unless="${numStops > 0}">Direct (no stops)</span>
                     </td>
                     <td><span th:text="${route.calculateDistance()}"></span> km</td>
-                    <td th:with="id=${route.getId()}">
+                    <td th:with="id=${savedRoute.getId()}">
                         <div class="row">
                             <div class="col-sm">
                                 <a th:href="@{'/routes/' + ${id}}" class="btn btn-link">View Route</a>

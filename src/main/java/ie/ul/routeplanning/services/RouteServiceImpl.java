@@ -1,6 +1,5 @@
 package ie.ul.routeplanning.services;
 
-import ie.ul.routeplanning.constants.Constant;
 import ie.ul.routeplanning.repositories.RouteRepository;
 import ie.ul.routeplanning.repositories.WaypointRepository;
 import ie.ul.routeplanning.routes.Route;
@@ -19,8 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * The implementation for our route service
@@ -108,16 +105,7 @@ public class RouteServiceImpl implements RouteService {
      * @return the list of saved routes for the provided user
      */
     @Override
-    public List<Route> getSavedRoutes(User user) {
+    public List<SavedRoute> getSavedRoutes(User user) {
         return routeRepository.findSavedRoutesByUsername(user.getUsername());
-    }
-
-    /**
-     * Find a waypoint with the provided name
-     * @param name the name of the waypoint
-     * @return an optional containing the waypoint, empty if not found
-     */
-    private Optional<Waypoint> findWaypoint(String name) {
-        return waypointRepository.findByName(name).stream().findFirst();
     }
 }

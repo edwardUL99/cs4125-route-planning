@@ -21,6 +21,11 @@ public class SavedRoute extends Route {
      */
     @OneToOne(cascade=CascadeType.MERGE)
     private User user;
+    /**
+     * The route saved by this route instance
+     */
+    @OneToOne(cascade=CascadeType.MERGE)
+    private Route savedRoute;
 
     /**
      * Create the SavedRoute instance
@@ -32,8 +37,7 @@ public class SavedRoute extends Route {
         this.id = id;
         this.user = user;
 
-        if (route != null)
-            route.getRouteLegs().forEach(this::addRouteLeg);
+        setSavedRoute(route);
 
         this.saved = true;
     }
@@ -75,5 +79,25 @@ public class SavedRoute extends Route {
      */
     public void setUser(User user) {
         this.user = user;
+    }
+
+    /**
+     * Retrieve the saved route wrapped by this instance
+     * @return the saved route wrapped by the instance
+     */
+    public Route getSavedRoute() {
+        return savedRoute;
+    }
+
+    /**
+     * Change the saved route instance. It must be a route that is saved in the database, so if route.getId() returns null,
+     * an error is thrown
+     * @param route the route to save.
+     */
+    public void setSavedRoute(Route route) {
+        if (route != null && route.getId() == null)
+            throw new IllegalStateException("The provided route has no ID, so it is assumed not to be saved. This cannot happen");
+
+        this.savedRoute = route;
     }
 }

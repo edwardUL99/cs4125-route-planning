@@ -22,7 +22,7 @@ public class RouteLeg implements Edge {
 	 * The id of this routeleg
 	 */
 	@Id
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	/**
 	 * The start of the RouteLeg

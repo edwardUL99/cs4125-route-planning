@@ -84,10 +84,10 @@
             <div class="col text-start">
                 <button type="button" class="btn btn-link" onclick="window.history.back()">Go Back</button>
             </div>
-            <div th:if="${route.isSaved()}" class="col text-end mt-2">
+            <div th:if="${savedRoute != null}" class="col text-end mt-2">
                 <form method="POST" th:action="@{/routes/saved}">
                     <input type="hidden" name="action" value="DELETE">
-                    <input type="hidden" name="routeID" th:value="${route.getId()}">
+                    <input type="hidden" name="routeID" th:value="${savedRoute.getId()}">
                     <button class="btn btn-danger">Delete Route</button>
                 </form>
             </div>

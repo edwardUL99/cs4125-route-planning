@@ -15,26 +15,33 @@
         <div class="row align-items-center h-100">
             <div class="col-6 mx-auto">
                 <div class="text-center">
-                    <h3>Welcome to the Route Planning System</h3>
+                    <h3>Route Planning System</h3>
                 </div>
             </div>
         </div>
-        <div class="row align-items-center h-100">
+        <div class="row align-items-center">
             <div sec:authorize="isAuthenticated()">
                 <form id="logoutForm" method="POST" th:action="@{/logout}">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
             </div>
+        </div>
+        <div class="row">
             <h2>Welcome <span sec:authentication="name"></span></h2>
-            <ul>
-                <li><a th:href="@{/routes}">Generate Routes</a></li>
-            </ul>
-            <ul>
-                <li><a th:href="@{/routes/saved}">Saved Routes</a></li>
-            </ul>
-            <div class="text-end">
-                <a href="javascript:void" onclick="document.forms['logoutForm'].submit()">Logout</a>
+            <p>
+                With this system, you can enter two waypoints (a start and end of the route) and then generate routes between
+                these points. The routes can be adjusted to factor in routes with the lowest CO2 emissions or shortest
+                time for that distance. You can also save generated routes to your profile for future reference
+            </p>
+        </div>
+        <div class="row d-grid gap-2 mx-auto">
+            <div class="col">
+                <a th:href="@{/routes}" class="btn btn-primary">Generate Routes</a>
+                <a th:href="@{/routes/saved}" class="btn btn-primary">Saved Routes</a>
             </div>
+        </div>
+        <div class="row text-end">
+            <a href="javascript:void" onclick="document.forms['logoutForm'].submit()">Logout</a>
         </div>
     </div>
 </div>
