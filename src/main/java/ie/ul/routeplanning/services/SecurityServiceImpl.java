@@ -18,14 +18,23 @@ public class SecurityServiceImpl implements SecurityService{
     /**
      * The authentication manager for the security service
      */
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     /**
      * The user details service for the security service
      */
+    private final UserDetailsService userDetailsService;
+
+    /**
+     * Construct a Security service with the provided autowired dependencies
+     * @param authenticationManager the authentication manager for accessing auth details
+     * @param userDetailsService the service for retrieving user details
+     */
     @Autowired
-    private UserDetailsService userDetailsService;
+    public SecurityServiceImpl(AuthenticationManager authenticationManager, UserDetailsService userDetailsService) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+    }
 
     /**
      * This method should return true if authentication has been granted

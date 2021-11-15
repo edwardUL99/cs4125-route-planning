@@ -15,8 +15,16 @@ public class UserValidator implements Validator {
     /**
      * The user service for the system
      */
-    @Autowired
     private UserService userService;
+
+    /**
+     * Create a UserValidator with the provided user service dependency
+     * @param userService the user service for accessing users
+     */
+    @Autowired
+    public UserValidator(UserService userService) {
+        this.userService = userService;
+    }
 
     /**
      * Determines if the validator supports the provided class

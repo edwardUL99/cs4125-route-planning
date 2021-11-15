@@ -2,8 +2,6 @@ package ie.ul.routeplanning.routes.graph.weights;
 
 import ie.ul.routeplanning.routes.graph.Edge;
 
-import java.time.Duration;
-
 /**
  * This class represents a decorator that adds time onto the weight
  */

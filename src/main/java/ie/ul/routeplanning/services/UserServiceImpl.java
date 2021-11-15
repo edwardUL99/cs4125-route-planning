@@ -16,18 +16,28 @@ public class UserServiceImpl implements UserService {
     /**
      * The user repository to delegate to
      */
-    @Autowired
     private UserRepository userRepository;
     /**
      * The role repository to delegate to
      */
-    @Autowired
     private RoleRepository roleRepository;
     /**
      * The password encoder for password encryption
      */
-    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    /**
+     * Create a UserServiceImpl with the provided dependencies
+     * @param userRepository the user repository for saving users
+     * @param roleRepository the repository for saving user roles
+     * @param bCryptPasswordEncoder the password encoder for password encryption
+     */
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     /**
      * Save the user to the system

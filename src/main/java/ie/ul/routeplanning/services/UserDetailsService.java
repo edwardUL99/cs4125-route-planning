@@ -21,8 +21,16 @@ public class UserDetailsService implements org.springframework.security.core.use
     /**
      * Our user repository for retrieving users
      */
-    @Autowired
     private UserRepository userRepository;
+
+    /**
+     * Create a UserDetailsService with the provided dependencies
+     * @param userRepository the user repository for retrieving users
+     */
+    @Autowired
+    public UserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * Load the user with the provided username

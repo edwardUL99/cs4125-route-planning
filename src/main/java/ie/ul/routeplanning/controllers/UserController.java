@@ -21,18 +21,28 @@ public class UserController {
     /**
      * The user service for the controller
      */
-    @Autowired
     private UserService userService;
     /**
      * The security service for the controller
      */
-    @Autowired
     private SecurityService securityService;
     /**
      * The user validator for the controller
      */
-    @Autowired
     private UserValidator userValidator;
+
+    /**
+     * Constructs a UserController with the autowired parameters
+     * @param userService the service for working with users
+     * @param securityService the service for querying authentication for logged in users
+     * @param userValidator the validator for validating users
+     */
+    @Autowired
+    public UserController(UserService userService, SecurityService securityService, UserValidator userValidator) {
+        this.userService = userService;
+        this.securityService = securityService;
+        this.userValidator = userValidator;
+    }
 
     /**
      * The mapping for registration

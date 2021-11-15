@@ -13,8 +13,16 @@ public class TransportMethodServiceImpl implements TransportMethodService {
     /**
      * The repository for storing transport methods
      */
+    private final TransportMethodRepository transportMethodRepository;
+
+    /**
+     * Construct a TransportMethodServiceImpl instance using the provided dependency
+     * @param transportMethodRepository the repository for storing transport methods
+     */
     @Autowired
-    private TransportMethodRepository transportMethodRepository;
+    public TransportMethodServiceImpl(TransportMethodRepository transportMethodRepository) {
+        this.transportMethodRepository = transportMethodRepository;
+    }
 
     /**
      * Get the transport method with the provided name

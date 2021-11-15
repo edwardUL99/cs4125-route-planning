@@ -13,8 +13,16 @@ public class WaypointServiceImpl implements WaypointService {
     /**
      * The waypoint repository for accessing waypoints
      */
-    @Autowired
     private WaypointRepository waypointRepository;
+
+    /**
+     * Creates a WaypointServiceImpl with the provided dependencies
+     * @param waypointRepository the waypoint repository for accessing waypoints
+     */
+    @Autowired
+    public WaypointServiceImpl(WaypointRepository waypointRepository) {
+        this.waypointRepository = waypointRepository;
+    }
 
     /**
      * Finds the first waypoint with the provided name

@@ -1,7 +1,6 @@
 package ie.ul.routeplanning.services;
 
 import ie.ul.routeplanning.repositories.RouteRepository;
-import ie.ul.routeplanning.repositories.WaypointRepository;
 import ie.ul.routeplanning.routes.Route;
 import ie.ul.routeplanning.routes.SavedRoute;
 import ie.ul.routeplanning.routes.Waypoint;
@@ -25,15 +24,18 @@ import java.util.List;
 @Service
 public class RouteServiceImpl implements RouteService {
     /**
-     * The waypoint repository used for finding waypoints
-     */
-    @Autowired
-    private WaypointRepository waypointRepository;
-    /**
      * The RouteRepository for saving/loading routes
      */
+    private final RouteRepository routeRepository;
+
+    /**
+     * Creates a RouteServiceImpl with the provided route repository dependency
+     * @param routeRepository the route repository for saving/loading routes
+     */
     @Autowired
-    private RouteRepository routeRepository;
+    public RouteServiceImpl(RouteRepository routeRepository) {
+        this.routeRepository = routeRepository;
+    }
 
     /**
      * Retrieve the route with the provided ID

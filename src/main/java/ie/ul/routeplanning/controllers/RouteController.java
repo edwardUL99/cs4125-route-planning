@@ -1,7 +1,6 @@
 package ie.ul.routeplanning.controllers;
 
 import ie.ul.routeplanning.constants.Constant;
-import ie.ul.routeplanning.repositories.WaypointRepository;
 import ie.ul.routeplanning.routes.Route;
 import ie.ul.routeplanning.routes.SavedRoute;
 import ie.ul.routeplanning.routes.Waypoint;
@@ -18,9 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 /**
  * The controller class for handling routes
@@ -30,32 +27,45 @@ public class RouteController {
     /**
      * The graph service for loading our graph
      */
-    @Autowired
-    private GraphService graphService;
+    private final GraphService graphService;
 
     /**
      * Our route service for generating routes
      */
-    @Autowired
-    private RouteService routeService;
+    private final RouteService routeService;
 
     /**
      * Our waypoint service for retrieving waypoints
      */
-    @Autowired
-    private WaypointService waypointService;
+    private final WaypointService waypointService;
 
     /**
      * Our user service for finding users
      */
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     /**
      * Our security service for determining users
      */
+    private final SecurityService securityService;
+
+    /**
+     * Construct a route controller with the autowired fields
+     * @param graphService the service for loading the graph
+     * @param routeService the service for generating the routes
+     * @param waypointService the service for loading waypoints
+     * @param userService the service for loading users
+     * @param securityService the service for querying authentication
+     */
     @Autowired
-    private SecurityService securityService;
+    public RouteController(GraphService graphService, RouteService routeService, WaypointService waypointService,
+                           UserService userService, SecurityService securityService) {
+        this.graphService = graphService;
+        this.routeService = routeService;
+        this.waypointService = waypointService;
+        this.userService = userService;
+        this.securityService = securityService;
+    }
 
     /**
      * The home page for the routes

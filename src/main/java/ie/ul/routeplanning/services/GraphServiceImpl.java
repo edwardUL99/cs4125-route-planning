@@ -24,17 +24,26 @@ public class GraphServiceImpl implements GraphService {
     /**
      * Our repository for finding waypoints
      */
-    @Autowired
     private WaypointRepository waypointRepository;
     /**
      * The repository for transport methods
      */
-    @Autowired
     private TransportMethodRepository transportMethodRepository;
     /**
      * The singleton graph instance which is lazily initialised by loadGraph
      */
     private static Graph GRAPH_INSTANCE = null;
+
+    /**
+     * Creates a GraphServiceImpl with the provided dependencies
+     * @param waypointRepository the repository for loading waypoints
+     * @param transportMethodRepository the repository for loading transport methods
+     */
+    @Autowired
+    public GraphServiceImpl(WaypointRepository waypointRepository, TransportMethodRepository transportMethodRepository) {
+        this.waypointRepository = waypointRepository;
+        this.transportMethodRepository = transportMethodRepository;
+    }
 
     /**
      * Loads the graph as a singleton instance and returns a copy of it.
