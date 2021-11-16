@@ -227,21 +227,34 @@ public class RouteControllerTest {
     }
 
     /**
-     * This test tests that a route should be displayed successfully.
+     * This test tests that a route should be displayed successfully and it hasn't been saved yet.
      */
     @Test
     void shouldDisplaySavedRoute() throws Exception {
         Route route = TEST_ROUTES.get(0);
+        String username = "testUser";
+        User user = new User();
+        user.setUsername(username);
 
         when(routeServiceMock.getRoute(1L))
                 .thenReturn(route);
+        when(securityServiceMock.getUsername())
+                .thenReturn(username);
+        when(userServiceMock.findByUsername(username))
+                .thenReturn(user);
+        when(routeServiceMock.isRouteSaved(user, route))
+                .thenReturn(false);
 
         mockMvc.perform(get("/routes/" + 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("route"))
-                .andExpect(model().attribute("route", is(route)));
+                .andExpect(model().attribute("route", is(route)))
+                .andExpect(model().attribute("unsaved", true));
 
         verify(routeServiceMock).getRoute(1L);
+        verify(securityServiceMock).getUsername();
+        verify(userServiceMock).findByUsername(username);
+        verify(routeServiceMock).isRouteSaved(user, route);
     }
 
     /**
