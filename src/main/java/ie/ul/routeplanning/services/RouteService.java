@@ -50,4 +50,12 @@ public interface RouteService {
      * @return the list of saved routes for the provided user
      */
     List<SavedRoute> getSavedRoutes(User user);
+
+    /**
+     * This method determines if the provided route is saved by the given user
+     * @param user the user to check if the route is saved
+     * @param route the route to check if it's saved
+     * @return true if saved, false if not
+     */
+    boolean isRouteSaved(User user, Route route);
 }

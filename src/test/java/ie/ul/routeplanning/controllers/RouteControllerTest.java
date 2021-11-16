@@ -230,7 +230,7 @@ public class RouteControllerTest {
      * This test tests that a route should be displayed successfully.
      */
     @Test
-    void shouldDisplaySavedTest() throws Exception {
+    void shouldDisplaySavedRoute() throws Exception {
         Route route = TEST_ROUTES.get(0);
 
         when(routeServiceMock.getRoute(1L))

@@ -87,7 +87,7 @@
                             <a th:href="@{'/routes/' + ${id}}" class="btn btn-link">View Route</a>
                         </div>
                         <div class="col">
-                            <form method="POST" th:action="@{/routes/save_route}" th:id="${'save-' + id}">
+                            <form method="POST" th:action="@{/routes/save_route}">
                                 <input type="hidden" name="saveRouteID" th:value="${id}">
                                 <button class="btn btn-link">Save Route</button>
                             </form>
@@ -125,7 +125,7 @@
                                 <a th:href="@{'/routes/' + ${id}}" class="btn btn-link">View Route</a>
                             </div>
                             <div class="col">
-                                <form method="POST" th:action="@{/routes/save_route}" th:id="${'save-' + id}">
+                                <form method="POST" th:action="@{/routes/save_route}">
                                     <input type="hidden" name="saveRouteID" th:value="${id}">
                                     <button class="btn btn-link">Save Route</button>
                                 </form>

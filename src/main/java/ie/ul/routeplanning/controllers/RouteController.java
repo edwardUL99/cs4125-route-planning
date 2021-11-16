@@ -198,6 +198,12 @@ public class RouteController {
             route = ((SavedRoute) route).getSavedRoute();
         }
 
+        String username = securityService.getUsername();
+        if (username != null) {
+            boolean saved = routeService.isRouteSaved(userService.findByUsername(username), route);
+            model.addAttribute("unsaved", !saved);
+        }
+
         model.addAttribute("route", route);
 
         return "route";

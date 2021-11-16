@@ -110,4 +110,18 @@ public class RouteServiceImpl implements RouteService {
     public List<SavedRoute> getSavedRoutes(User user) {
         return routeRepository.findSavedRoutesByUsername(user.getUsername());
     }
+
+    /**
+     * This method determines if the provided route is saved by the given user
+     *
+     * @param user  the user to check if the route is saved
+     * @param route the route to check if it's saved
+     * @return true if saved, false if not
+     */
+    @Override
+    public boolean isRouteSaved(User user, Route route) {
+        return getSavedRoutes(user)
+                .stream()
+                .anyMatch(s -> s.getSavedRoute().getId().equals(route.getId()));
+    }
 }
