@@ -40,6 +40,6 @@ public class PlaneTransportMethod extends TransportMethod {
 	 */
 	@Override
 	public double getAverageSpeed() {
-		return 880;
+		return 500;
 	}
 }
