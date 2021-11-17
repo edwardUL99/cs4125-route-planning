@@ -4,6 +4,9 @@ files:
   - source: .
     destination: /route-planning/source
 hooks:
+  ApplicationStop:
+    - location: scripts/stop.sh
+      timeout: 180
   AfterInstall:
     - location: scripts/build.sh
       timeout: 180

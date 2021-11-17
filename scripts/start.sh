@@ -1,3 +1,3 @@
-/usr/bin/env bash
+#! /usr/bin/env bash
 
-sudo systemctl restart route-planning
+sudo systemctl start route-planning
