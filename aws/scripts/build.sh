@@ -5,17 +5,14 @@
 PROPERTIES="/home/ec2-user/route-planning/spring.properties"
 CODE="/home/ec2-user/route-planning/source"
 
+cd "$CODE"
+
 SKIP_TESTS="$1"
 
 if [ "$SKIP_TESTS" == "-skip-tests" ]; then
 	SKIP_TESTS="-DskipTests"
 else
 	SKIP_TESTS=""
-fi
-
-if [ "$PWD" != "$CODE" ]; then
-	echo "Changing from $PWD to $CODE"
-	cd "$CODE"
 fi
 
 echo "Restoring original application.properties file"
@@ -33,11 +30,12 @@ fi
 
 echo "$command"
 $command > $LOG 2>&1
+mvn_exit="$?"
 
 echo "Installing service file"
 aws/scripts/install-service.sh
 
-if [ "$?" -ne "0" ]; then
+if [ "$mvn_exit" -ne "0" ]; then
 	echo "Build failed, see $LOG"
 	exit 1
 else
