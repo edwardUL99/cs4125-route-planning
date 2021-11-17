@@ -1,0 +1,11 @@
+[Unit]
+Description=Spring Boot Route Planning backend
+
+[Service]
+User=root
+WorkingDirectory=/home/ec2-user/route-planning
+ExecStart=/home/ec2-user/route-planning/source/aws/scripts/run.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
 
+# This script uses maven to build the target jar and installs the service
 
 PROPERTIES="/home/ec2-user/route-planning/spring.properties"
 CODE="/home/ec2-user/route-planning/source"
@@ -32,6 +33,9 @@ fi
 
 echo "$command"
 $command > $LOG 2>&1
+
+echo "Installing service file"
+aws/scripts/install-service.sh
 
 if [ "$?" -ne "0" ]; then
 	echo "Build failed, see $LOG"

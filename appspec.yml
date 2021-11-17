@@ -6,8 +6,8 @@ files:
 file_exists_behavior: OVERWRITE
 hooks:
   AfterInstall:
-    - location: scripts/build.sh
+    - location: aws/scripts/build.sh
       timeout: 180
   ApplicationStart:
-    - location: scripts/start.sh
+    - location: aws/scripts/start.sh
       timeout: 3600
