@@ -12,6 +12,8 @@
 
     <properties>
         <start-class>ie.ul.routeplanning.Application</start-class>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
     <groupId>ie.ul</groupId>

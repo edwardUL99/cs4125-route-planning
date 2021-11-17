@@ -50,6 +50,21 @@ public class RouteController {
     private final SecurityService securityService;
 
     /**
+     * The name of the routes view
+     */
+    private static final String ROUTES = "routes";
+
+    /**
+     * The key for an error message in the model
+     */
+    private static final String ERROR = "error";
+
+    /**
+     * The redirect to the routes page
+     */
+    private static final String ROUTES_REDIRECT = "redirect:/" + ROUTES;
+
+    /**
      * Construct a route controller with the autowired fields
      * @param graphService the service for loading the graph
      * @param routeService the service for generating the routes
@@ -73,13 +88,13 @@ public class RouteController {
      * @param response the response to the request
      * @return the name of the routes page
      */
-    @RequestMapping(value="/routes", method=RequestMethod.GET)
+    @GetMapping(ROUTES)
     public String routesHome(Model model, HttpServletResponse response) {
         if (model.asMap().size() != 0) {
             response.addHeader("Cache-Control", "Public");
         }
 
-        return "routes";
+        return ROUTES;
     }
 
     /**
@@ -139,7 +154,7 @@ public class RouteController {
      * @param time        true if time should be factored into the route duration
      * @return the name of the view
      */
-    @RequestMapping(value="/routes", method=RequestMethod.POST)
+    @PostMapping(ROUTES)
     public ModelAndView generateRoutes(RedirectAttributes redirectAttributes, @RequestParam String startWaypoint, @RequestParam String endWaypoint,
                                        @RequestParam(required=false) boolean ecoFriendly, @RequestParam(required=false) boolean time) {
         AtomicReference<String> startWayRef = new AtomicReference<>(startWaypoint);
@@ -168,17 +183,17 @@ public class RouteController {
             if (graph != null) {
                 List<Route> routes = routeService.generateRoutes(graph, start, end, ecoFriendly, time);
 
-                Route bestRoute = (routes.size() == 0) ? null : routes.remove(0);
+                Route bestRoute = (routes.isEmpty()) ? null : routes.remove(0);
 
                 redirectAttributes.addFlashAttribute("bestRoute", bestRoute);
-                redirectAttributes.addFlashAttribute("routes", routes);
+                redirectAttributes.addFlashAttribute(ROUTES, routes);
             } else {
-                redirectAttributes.addFlashAttribute("error", "An error occurred generating routes, please try again");
+                redirectAttributes.addFlashAttribute(ERROR, "An error occurred generating routes, please try again");
             }
         } else {
-            redirectAttributes.addFlashAttribute("error", error);
+            redirectAttributes.addFlashAttribute(ERROR, error);
         }
-        modelAndView.setViewName("redirect:/routes");
+        modelAndView.setViewName(ROUTES_REDIRECT);
 
         return modelAndView;
     }
@@ -189,7 +204,7 @@ public class RouteController {
      * @param routeID the ID of the route passed in on the request
      * @return the name of the view to load
      */
-    @RequestMapping("/routes/{routeID}")
+    @RequestMapping(ROUTES + "/{routeID}")
     public String getRoute(Model model, @PathVariable Long routeID) {
         Route route = routeService.getRoute(routeID);
 
@@ -215,15 +230,15 @@ public class RouteController {
      * @param saveRouteID the ID of the route to save
      * @return the redirected view
      */
-    @RequestMapping(value="/routes/save_route", method=RequestMethod.POST)
+    @PostMapping(ROUTES + "/save_route")
     public ModelAndView saveRoute(RedirectAttributes redirectAttributes, @RequestParam Long saveRouteID) {
         Route route = routeService.getRoute(saveRouteID);
 
         ModelAndView modelAndView = new ModelAndView();
 
         if (route == null) {
-            redirectAttributes.addFlashAttribute("error", "The route does not exist");
-            modelAndView.setViewName("redirect:/routes");
+            redirectAttributes.addFlashAttribute(ERROR, "The route does not exist");
+            modelAndView.setViewName(ROUTES_REDIRECT);
         } else {
             String username = securityService.getUsername();
 
@@ -233,10 +248,10 @@ public class RouteController {
 
                 redirectAttributes.addFlashAttribute("success", "Route has been saved successfully");
 
-                modelAndView.setViewName("redirect:/routes/" + saveRouteID);
+                modelAndView.setViewName(ROUTES_REDIRECT + "/" + saveRouteID);
             } else {
-                redirectAttributes.addFlashAttribute("error", "You must be a registered and logged in user to save a route");
-                modelAndView.setViewName("redirect:/routes");
+                redirectAttributes.addFlashAttribute(ERROR, "You must be a registered and logged in user to save a route");
+                modelAndView.setViewName(ROUTES_REDIRECT);
             }
         }
 
@@ -248,7 +263,7 @@ public class RouteController {
      * @param model the model to add attributes to
      * @return the name of the view
      */
-    @RequestMapping(value="/routes/saved", method=RequestMethod.GET)
+    @GetMapping(ROUTES + "/saved")
     public String savedRoutes(Model model) {
         String username = securityService.getUsername();
 
@@ -257,7 +272,7 @@ public class RouteController {
             List<SavedRoute> savedRoutes = routeService.getSavedRoutes(user);
 
             model.addAttribute("user", user);
-            model.addAttribute("routes", savedRoutes);
+            model.addAttribute(ROUTES, savedRoutes);
 
             return "saved_routes";
         } else {
@@ -272,7 +287,7 @@ public class RouteController {
      * @param routeID the ID of the route to perform the action on
      * @return the name of the view
      */
-    @RequestMapping(value="/routes/saved", method=RequestMethod.POST)
+    @PostMapping(ROUTES + "/saved")
     public String savedRouteAction(Model model, @RequestParam String action, @RequestParam Long routeID) {
         action = action.toUpperCase();
 
@@ -280,6 +295,6 @@ public class RouteController {
             routeService.deleteRoute(routeID);
         }
 
-        return "redirect:/routes/saved";
+        return ROUTES_REDIRECT + "/saved";
     }
 }
