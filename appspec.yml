@@ -1,0 +1,13 @@
+version: 0.0
+os: linux
+files:
+  - source: .
+    destination: /route-planning/source
+  - source: /route-planning/spring.properties
+    destination: /route-planning/source/src/main/resources/application.properties
+hooks:
+  AfterInstall:
+    - location: /route-planning/build-no-pull.sh
+      timeout: 180
+  ApplicationStart:
+    - location: /route-planning/route-planning.sh restart
