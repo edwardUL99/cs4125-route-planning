@@ -6,3 +6,9 @@ cd "/home/ec2-user/route-planning/source"
 
 cp aws/service/route-planning.service /etc/systemd/system/
 systemctl daemon-reload
+
+enabled=$(systemctl list-unit-files | grep enabled | grep route-planning.service)
+
+if [ -z "$enabled" ]; then
+  systemctl enable route-planning.service
+fi
