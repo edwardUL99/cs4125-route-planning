@@ -6,7 +6,15 @@ Route Planning system for CS4125 module project.
 - Maven 3.6.3 installed
 - Java 11 minimum
 
-## Setup
+## AWS Deployment
+There is an existing AWS (Amazon Web Services) deployment of the application that is deployed on every push to the main branch that can be found
+here: http://www.cs4125routeplanning.ie
+
+It has its own database hosted on AWS also, so it does not need database setup
+
+To deploy the app on your own machine, follow the next few sections
+
+## Database Setup
 To setup the database for this project, ensure MySQL is installed and running on localhost:3306 and run the following commands:
 ```bash
 sudo mysql
@@ -25,7 +33,12 @@ spring.datasource.password=<password>
 ```
 Again, change the values in triangle brackets to the values you used setting up the database.
 
-Now, run the following command:
+## Quick Run
+This section shows how you can quickly build and run the app without installing/deploying it. It is easiest to install it
+as it will be deployed as a service and restart automatically, however follow these steps to quickly run it. To read about
+local deployment, read the next section.
+
+Run the following command:
 ```bash
 mvn clean package spring-boot:repackage
 ```
