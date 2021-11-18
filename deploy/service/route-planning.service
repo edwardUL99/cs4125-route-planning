@@ -3,8 +3,7 @@ Description=Spring Boot Route Planning backend
 
 [Service]
 User=root
-WorkingDirectory=/home/ec2-user/route-planning
-ExecStart=/home/ec2-user/route-planning/source/aws/scripts/run.sh
+ExecStart=/bin/route_planning_service.sh
 Restart=always
 
 [Install]

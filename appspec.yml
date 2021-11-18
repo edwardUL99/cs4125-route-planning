@@ -3,11 +3,15 @@ os: linux
 files:
   - source: .
     destination: /home/ec2-user/route-planning/source
+  - source: ./deploy/scripts/route_planning_env.sh
+    destination: /bin
+  - source: ./deploy/scripts/route_planning_service.sh
+    destination: /bin
 file_exists_behavior: OVERWRITE
 hooks:
   AfterInstall:
-    - location: aws/scripts/build.sh
+    - location: deploy/scripts/build.sh
       timeout: 180
   ApplicationStart:
-    - location: aws/scripts/start.sh
+    - location: deploy/scripts/start.sh
       timeout: 3600

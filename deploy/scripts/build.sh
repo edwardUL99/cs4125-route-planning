@@ -2,10 +2,9 @@
 
 # This script uses maven to build the target jar and installs the service
 
-PROPERTIES="/home/ec2-user/route-planning/spring.properties"
-CODE="/home/ec2-user/route-planning/source"
+source /bin/route_planning_env.sh
 
-cd "$CODE"
+cd "$ROUTE_PLANNING_CODE"
 
 SKIP_TESTS="$1"
 
@@ -18,11 +17,11 @@ fi
 current_date=$(date +"%m_%d_%Y_%H_%M_%S")
 
 echo "Restoring original application.properties file"
-cp "$PROPERTIES" "$CODE/src/main/resources/application.properties"
+cp "$ROUTE_PLANNING_PROPERTIES" "$ROUTE_PLANNING_CODE/src/main/resources/application.properties"
 
 echo "Building code..."
 
-LOG="/home/ec2-user/route-planning/build.log.$current_date"
+LOG="$ROUTE_PLANNING_ROOT/build.log.$current_date"
 
 command="mvn clean package spring-boot:repackage"
 
@@ -31,13 +30,18 @@ if [ ! -z "$SKIP_TESTS" ]; then
 fi
 
 echo "$command"
-$command > $LOG 2>&1
+$command > "$LOG" 2>&1
 mvn_exit="$?"
 
-echo "Installing service file"
-aws/scripts/install-service.sh
+if [ "$mvn_exit" -ne "0" ]; then
+	echo "Build failed, see $LOG"
+	exit 1
+fi
 
-echo "Backing up revision to AWS S3"
+echo "Installing service file"
+deploy/scripts/install-service.sh
+
+echo "Backing up revision"
 backup_dir="route-planning_$current_date"
 cd ../..
 
@@ -47,9 +51,5 @@ fi
 
 cp -r route-planning "revisions/$backup_dir"
 
-if [ "$mvn_exit" -ne "0" ]; then
-	echo "Build failed, see $LOG"
-	exit 1
-else
-	echo "Build complete, you should now restart the app by running ./route-planning.sh restart"
-fi
+echo "Build complete, you should now restart the app by running $ROUTE_PLANNING_CODE/deploy/scripts/route-planning.sh restart"
+
