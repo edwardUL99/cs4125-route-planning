@@ -40,7 +40,7 @@ current_date=$(date +"%m_%d_%Y_%H_%M_%S")
 backup_dir="route-planning_$current_date"
 cd ../..
 cp -r route-planning "$backup_dir"
-aws s3 cp --recursive "$backup_dir" s3://route-planning-bucket/revisions
+aws s3 cp --recursive "$backup_dir" s3://route-planning-bucket/revisions/"$backup_dir"
 rm -rf "$backup_dir"
 
 if [ "$mvn_exit" -ne "0" ]; then
