@@ -2,9 +2,11 @@
 
 # This script installs the route-planning.service file into the systemd service and restarts it
 
-cd "/home/ec2-user/route-planning/source"
+source /bin/route_planning_env.sh
 
-cp aws/service/route-planning.service /etc/systemd/system/
+cd "$ROUTE_PLANNING_SOURCE"
+
+cp deploy/service/route-planning.service /etc/systemd/system/
 systemctl daemon-reload
 
 enabled=$(systemctl list-unit-files | grep enabled | grep route-planning.service)
