@@ -5,18 +5,13 @@ import ie.ul.routeplanning.routes.graph.Edge;
 /**
  * This class represents a decorator that adds time onto the weight
  */
-public class TimeWeightDecorator implements WeightFunction {
-    /**
-     * The weight function that is decorated
-     */
-    private final WeightFunction weightFunction;
-
+public class TimeWeightDecorator extends WeightDecorator {
     /**
      * Create a TimeWeightDecorator wrapping the provided weight function
      * @param weightFunction the weight function that is wrapped
      */
     public TimeWeightDecorator(WeightFunction weightFunction) {
-        this.weightFunction = weightFunction;
+        super(weightFunction);
     }
 
     /**

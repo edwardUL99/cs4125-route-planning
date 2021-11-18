@@ -5,18 +5,14 @@ import ie.ul.routeplanning.routes.graph.Edge;
 /**
  * This class is a decorator for adding CO2 emissions to the weight
  */
-public class CO2WeightDecorator implements WeightFunction {
-    /**
-     * The decorated weight function
-     */
-    private final WeightFunction weightFunction;
+public class CO2WeightDecorator extends WeightDecorator {
 
     /**
      * Create a C02WeightDecorator which decorates the provided weight function
      * @param weightFunction the weight function to decorate
      */
     public CO2WeightDecorator(WeightFunction weightFunction) {
-        this.weightFunction = weightFunction;
+        super(weightFunction);
     }
 
     /**
