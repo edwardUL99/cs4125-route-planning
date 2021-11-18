@@ -15,12 +15,14 @@ else
 	SKIP_TESTS=""
 fi
 
+current_date=$(date +"%m_%d_%Y_%H_%M_%S")
+
 echo "Restoring original application.properties file"
 cp "$PROPERTIES" "$CODE/src/main/resources/application.properties"
 
 echo "Building code..."
 
-LOG="/home/ec2-user/route-planning/build.log"
+LOG="/home/ec2-user/route-planning/build.log.$current_date"
 
 command="mvn clean package spring-boot:repackage"
 
@@ -36,7 +38,6 @@ echo "Installing service file"
 aws/scripts/install-service.sh
 
 echo "Backing up revision to AWS S3"
-current_date=$(date +"%m_%d_%Y_%H_%M_%S")
 backup_dir="route-planning_$current_date"
 cd ../..
 cp -r route-planning "$backup_dir"
