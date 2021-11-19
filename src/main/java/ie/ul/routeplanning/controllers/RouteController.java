@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -185,7 +186,8 @@ public class RouteController {
 
                 Route bestRoute = (routes.isEmpty()) ? null : routes.remove(0);
 
-                redirectAttributes.addFlashAttribute("bestRoute", bestRoute);
+                redirectAttributes.addFlashAttribute("bestRoute",
+                        (bestRoute == null) ? null:Collections.singletonList(bestRoute)); // for the template to work, the bestRoute needs to be in a list
                 redirectAttributes.addFlashAttribute(ROUTES, routes);
             } else {
                 redirectAttributes.addFlashAttribute(ERROR, "An error occurred generating routes, please try again");
@@ -193,6 +195,7 @@ public class RouteController {
         } else {
             redirectAttributes.addFlashAttribute(ERROR, error);
         }
+
         modelAndView.setViewName(ROUTES_REDIRECT);
 
         return modelAndView;
@@ -208,15 +211,17 @@ public class RouteController {
     public String getRoute(Model model, @PathVariable Long routeID) {
         Route route = routeService.getRoute(routeID);
 
-        if (route.isSaved()) {
-            model.addAttribute("savedRoute", route);
-            route = ((SavedRoute) route).getSavedRoute();
-        }
+        if (route != null) {
+            if (route.isSaved()) {
+                model.addAttribute("savedRoute", route);
+                route = ((SavedRoute) route).getSavedRoute();
+            }
 
-        String username = securityService.getUsername();
-        if (username != null) {
-            boolean saved = routeService.isRouteSaved(userService.findByUsername(username), route);
-            model.addAttribute("unsaved", !saved);
+            String username = securityService.getUsername();
+            if (username != null) {
+                boolean saved = routeService.isRouteSaved(userService.findByUsername(username), route);
+                model.addAttribute("unsaved", !saved);
+            }
         }
 
         model.addAttribute("route", route);
@@ -244,9 +249,14 @@ public class RouteController {
 
             if (username != null) {
                 User user = userService.findByUsername(username);
-                routeService.saveRoute(user, route);
 
-                redirectAttributes.addFlashAttribute("success", "Route has been saved successfully");
+                if (routeService.isRouteSaved(user, route)) {
+                    redirectAttributes.addFlashAttribute("error", "You have already saved this route");
+                } else {
+                    routeService.saveRoute(user, route);
+
+                    redirectAttributes.addFlashAttribute("success", "Route has been saved successfully");
+                }
 
                 modelAndView.setViewName(ROUTES_REDIRECT + "/" + saveRouteID);
             } else {

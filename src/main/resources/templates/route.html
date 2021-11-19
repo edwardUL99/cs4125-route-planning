@@ -16,7 +16,7 @@
             <div class="row align-items-center h-100">
                 <div class="col-6 mx-auto">
                     <div class="text-center">
-                        <h3>Route Information Page</h3>
+                        <h3>Route Information</h3>
                     </div>
                 </div>
             </div>
@@ -43,10 +43,18 @@
                 </div>
             </div>
         </div>
-        <div th:if="${success != null}" class="row mt-5">
-            <div class="alert alert-success alert-dismissible" role="alert">
-                <span th:text="${success}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div th:if="${success != null || error != null}">
+            <div th:if="${success != null}" class="row mt-5">
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+            <div th:if="${error != null}" class="row mt-5">
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             </div>
         </div>
         <div class="card shadow px-5 mt-5 py-5">

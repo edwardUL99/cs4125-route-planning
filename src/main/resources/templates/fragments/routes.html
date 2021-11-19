@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Fragments - DO NOT USE AS A VIEW</title>
+</head>
+<body>
+<table class="table table-striped" th:fragment="routes_table(routes, savedRoutes)">
+    <thead>
+        <tr>
+            <th scope="col">Route</th>
+            <th scope="col">Intermediary Stops</th>
+            <th scope="col">Distance</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="routeItem : ${routes}"
+            th:with="id=${routeItem.id},route=${(savedRoutes) ? routeItem.savedRoute:routeItem}">
+            <td th:text="${route.getStart().name + ' to ' + route.getEnd().name}"></td>
+            <td th:with="numStops=${route.getNumberStops()}">
+                <p th:if="${numStops > 0}"><span th:text="${numStops}"></span> stop(s)</p>
+                <span th:unless="${numStops > 0}">Direct (no stops)</span>
+            </td>
+            <td><span th:text="${route.calculateDistance()}"></span> km</td>
+            <td>
+                <div class="row">
+                    <div class="col-sm">
+                        <a th:href="@{'/routes/' + ${id}}" class="btn btn-link">View Route</a>
+                    </div>
+                    <div th:if="${savedRoutes}" class="col-sm">
+                        <form method="POST" th:action="@{/routes/saved}">
+                            <input type="hidden" name="action" value="DELETE">
+                            <input type="hidden" name="routeID" th:value="${id}">
+                            <button class="btn btn-danger">Delete Route</button>
+                        </form>
+                    </div>
+                    <div th:unless="${savedRoutes}" class="col-sm">
+                        <form method="POST" th:action="@{/routes/save_route}">
+                            <input type="hidden" name="saveRouteID" th:value="${id}">
+                            <button class="btn btn-link">Save Route</button>
+                        </form>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>
