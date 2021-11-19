@@ -161,6 +161,7 @@ public class RouteControllerTest {
                 .thenReturn(TEST_GRAPH);
 
         Route bestRoute = TEST_ROUTES.get(0);
+
         Route nextRoute = TEST_ROUTES.get(1);
 
         mockMvc.perform(post("/routes")
@@ -176,7 +177,8 @@ public class RouteControllerTest {
                 .andExpect(flash().attribute("time", false))
                 .andExpect(flash().attribute("routes", hasSize(1)))
                 .andExpect(flash().attribute("routes", hasItem(nextRoute)))
-                .andExpect(flash().attribute("bestRoute", is(bestRoute)));
+                .andExpect(flash().attribute("bestRoute", hasSize(1)))
+                .andExpect(flash().attribute("bestRoute", contains(bestRoute)));
 
         verify(routeServiceMock).generateRoutes(TEST_GRAPH, startWaypoint, endWaypoint, false, false);
         verify(graphServiceMock).loadGraph();
@@ -218,7 +220,8 @@ public class RouteControllerTest {
                 .andExpect(flash().attribute("ecoFriendly", false))
                 .andExpect(flash().attribute("time", false))
                 .andExpect(flash().attribute("routes", hasSize(0)))
-                .andExpect(flash().attribute("bestRoute", is(bestRoute)));
+                .andExpect(flash().attribute("bestRoute", hasSize(1)))
+                .andExpect(flash().attribute("bestRoute", contains(bestRoute)));
 
         verify(routeServiceMock).generateRoutes(TEST_GRAPH, startWaypoint, endWaypoint, false, false);
         verify(graphServiceMock).loadGraph();
@@ -274,6 +277,8 @@ public class RouteControllerTest {
                 .thenReturn(username);
         when(userServiceMock.findByUsername(username))
                 .thenReturn(user);
+        when(routeServiceMock.isRouteSaved(user, route))
+                .thenReturn(false);
 
         mockMvc.perform(post("/routes/save_route").param("saveRouteID", "" + routeId))
                 .andExpect(status().is(302))
@@ -283,6 +288,7 @@ public class RouteControllerTest {
         verify(routeServiceMock).getRoute(routeId);
         verify(securityServiceMock).getUsername();
         verify(userServiceMock).findByUsername(username);
+        verify(routeServiceMock).isRouteSaved(user, route);
     }
 
     /**

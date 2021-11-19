@@ -15,7 +15,7 @@
         <div class="row align-items-center h-100">
             <div class="col-6 mx-auto">
                 <div class="text-center">
-                    <h3>Route Generation Page</h3>
+                    <h3>Route Generation</h3>
                 </div>
             </div>
         </div>
@@ -64,77 +64,13 @@
         <div class="text-center">
             <h4>Best Route</h4>
         </div>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">Route</th>
-                    <th scope="col">Intermediary Stops</th>
-                    <th scope="col">Distance</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            <tr th:with="route=${bestRoute}">
-                <td th:text="${route.getStart().name + ' to ' + route.getEnd().name}"></td>
-                <td th:with="numStops=${route.getNumberStops()}">
-                    <p th:if="${numStops > 0}"><span th:text="${numStops}"></span> stop(s)</p>
-                    <span th:unless="${numStops > 0}">Direct (no stops)</span>
-                </td>
-                <td><span th:text="${route.calculateDistance()}"></span> km</td>
-                <td>
-                    <div class="row" th:with="id=${route.getId()}">
-                        <div class="col">
-                            <a th:href="@{'/routes/' + ${id}}" class="btn btn-link">View Route</a>
-                        </div>
-                        <div class="col">
-                            <form method="POST" th:action="@{/routes/save_route}">
-                                <input type="hidden" name="saveRouteID" th:value="${id}">
-                                <button class="btn btn-link">Save Route</button>
-                            </form>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <table th:replace="fragments/routes :: routes_table(${bestRoute}, ${false})"></table>
     </div>
     <div th:if="${error == null && routes != null && routes.size() > 0}" class="card shadow px-5 mt-5 mb-2 py-5 rounded">
         <div class="text-center">
             <h4>Next <span th:text="${routes.size()}"></span> best routes</h4>
         </div>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">Route</th>
-                    <th scope="col">Intermediary Stops</th>
-                    <th scope="col">Distance</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="route : ${routes}">
-                    <td th:text="${route.getStart().name + ' to ' + route.getEnd().name}"></td>
-                    <td th:with="numStops=${route.getNumberStops()}">
-                        <p th:if="${numStops > 0}"><span th:text="${numStops}"></span> stop(s)</p>
-                        <span th:unless="${numStops > 0}">Direct (no stops)</span>
-                    </td>
-                    <td><span th:text="${route.calculateDistance()}"></span> km</td>
-                    <td>
-                        <div class="row" th:with="id=${route.getId()}">
-                            <div class="col">
-                                <a th:href="@{'/routes/' + ${id}}" class="btn btn-link">View Route</a>
-                            </div>
-                            <div class="col">
-                                <form method="POST" th:action="@{/routes/save_route}">
-                                    <input type="hidden" name="saveRouteID" th:value="${id}">
-                                    <button class="btn btn-link">Save Route</button>
-                                </form>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <table th:replace="fragments/routes :: routes_table(${routes}, ${false})"></table>
     </div>
     <div th:if="${error == null && routes != null && routes.size() == 0 && !startWaypoint.isEmpty() && !endWaypoint.isEmpty()}"
          class="card shadow px-5 mt-5 mb-2 py-5 rounded">
