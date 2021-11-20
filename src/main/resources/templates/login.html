@@ -38,7 +38,7 @@
                     <div class="form-group">
                         <span class="has-error" th:text="${error}"></span>
                     </div>
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                     <div class="row text-end mt-2 mb-2">
                         <div class="col-10">
                             <button class="btn btn-primary">Login</button>

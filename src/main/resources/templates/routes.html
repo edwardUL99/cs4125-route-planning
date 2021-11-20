@@ -41,13 +41,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col form-check">
-                        <input class="form-check-input" type="checkbox" th:checked="${ecoFriendly}" name="ecoFriendly">
-                        <label class="form-check-label">Eco-Friendly Routes</label>
+                    <div class="col">
+                        <div th:replace="fragments/forms :: checkbox(${'ecoFriendly'}, ${ecoFriendly}, ${'Eco-Friendly Routes'})"></div>
                     </div>
-                    <div class="col form-check">
-                        <input class="form-check-input" type="checkbox" th:checked="${time}" name="time">
-                        <label class="form-check-label">Quickest Time</label>
+                    <div class="col">
+                        <div th:replace="fragments/forms :: checkbox(${'time'}, ${time}, ${'Quickest Time'})"></div>
                     </div>
                     <div class="col text-end">
                         <button class="btn btn-primary" id="generate-button">Generate</button>
