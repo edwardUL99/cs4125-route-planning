@@ -16,15 +16,15 @@ public class UserServiceImpl implements UserService {
     /**
      * The user repository to delegate to
      */
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     /**
      * The role repository to delegate to
      */
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
     /**
      * The password encoder for password encryption
      */
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     /**
      * Create a UserServiceImpl with the provided dependencies

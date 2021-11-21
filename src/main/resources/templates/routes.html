@@ -48,10 +48,7 @@
                     </div>
                 </div>
             </form>
-            <div th:if="${error != null}" class="alert alert-danger alert-dismissible w-50">
-                <span th:text="${error}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+            <div th:if="${error != null}" class="w-50" th:insert="fragments/forms :: alert(${error}, ${'alert-danger'})"></div>
         </div>
     </div>
     <div th:if="${error == null && bestRoute != null}" class="card shadow px-5 mt-5 mb-2 py-5 rounded">

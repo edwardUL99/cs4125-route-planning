@@ -35,6 +35,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/resources/**", "/css/**", "/js/**", "/registration").permitAll().anyRequest()
                     .authenticated()
                     .and()
+                    .rememberMe().userDetailsService(userDetailsService).key("route-planning-remember-me")
+                    .and()
                     .formLogin()
                     .loginPage("/login")
                     .permitAll()
