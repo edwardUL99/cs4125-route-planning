@@ -9,6 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * The controller for user authentication and registration etc.
@@ -96,6 +100,18 @@ public class UserController {
         }
 
         return "login";
+    }
+
+    /**
+     * Handles when a session is invalid or timed out
+     * @param redirectAttributes the redirect attributes to forward to login's model
+     * @return the redirect url
+     */
+    @GetMapping("/session-timeout")
+    public String timeout(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("timeout",
+                "The session has timed out due to inactivity. Please login again");
+        return "redirect:/login";
     }
 
     @GetMapping({"/", "/welcome"})

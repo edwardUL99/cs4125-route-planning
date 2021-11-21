@@ -24,11 +24,11 @@ public class GraphServiceImpl implements GraphService {
     /**
      * Our repository for finding waypoints
      */
-    private WaypointRepository waypointRepository;
+    private final WaypointRepository waypointRepository;
     /**
      * The repository for transport methods
      */
-    private TransportMethodRepository transportMethodRepository;
+    private final TransportMethodRepository transportMethodRepository;
     /**
      * The singleton graph instance which is lazily initialised by loadGraph
      */

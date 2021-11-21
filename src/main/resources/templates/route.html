@@ -44,18 +44,8 @@
             </div>
         </div>
         <div th:if="${success != null || error != null}">
-            <div th:if="${success != null}" class="row mt-5">
-                <div class="alert alert-success alert-dismissible" role="alert">
-                    <span th:text="${success}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
-            <div th:if="${error != null}" class="row mt-5">
-                <div class="alert alert-danger alert-dismissible" role="alert">
-                    <span th:text="${error}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </div>
+            <div th:if="${success != null}" class="row mt-5" th:insert="fragments/components :: alert(${success}, ${'alert-success'})"></div>
+            <div th:if="${error != null}" class="row mt-5" th:insert="fragments/components :: alert(${error}, ${'alert-danger'})"></div>
         </div>
         <div class="card shadow px-5 mt-5 py-5">
             <div class="row text-center">
