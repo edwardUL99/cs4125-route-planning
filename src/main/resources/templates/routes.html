@@ -41,12 +41,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col">
-                        <div th:replace="fragments/forms :: checkbox(${'ecoFriendly'}, ${ecoFriendly}, ${'Eco-Friendly Routes'})"></div>
-                    </div>
-                    <div class="col">
-                        <div th:replace="fragments/forms :: checkbox(${'time'}, ${time}, ${'Quickest Time'})"></div>
-                    </div>
+                    <div class="col" th:insert="fragments/forms :: checkbox(${'ecoFriendly'}, ${ecoFriendly}, ${'Eco-Friendly Routes'})"></div>
+                    <div class="col" th:insert="fragments/forms :: checkbox(${'time'}, ${time}, ${'Quickest Time'})"></div>
                     <div class="col text-end">
                         <button class="btn btn-primary" id="generate-button">Generate</button>
                     </div>

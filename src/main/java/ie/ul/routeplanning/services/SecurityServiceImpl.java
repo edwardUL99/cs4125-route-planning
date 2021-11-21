@@ -64,15 +64,15 @@ public class SecurityServiceImpl implements SecurityService{
      */
     @Override
     public void autoLogin(String username, String password) {
-        if (System.getProperty("BYPASS_AUTH") != null) {
+        if (System.getProperty("BYPASS_AUTH") == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                     new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
 
-            authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+            Authentication auth = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
-            if (usernamePasswordAuthenticationToken.isAuthenticated()) {
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            if (auth.isAuthenticated()) {
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
     }

@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * The controller for user authentication and registration etc.
@@ -21,15 +18,15 @@ public class UserController {
     /**
      * The user service for the controller
      */
-    private UserService userService;
+    private final UserService userService;
     /**
      * The security service for the controller
      */
-    private SecurityService securityService;
+    private final SecurityService securityService;
     /**
      * The user validator for the controller
      */
-    private UserValidator userValidator;
+    private final UserValidator userValidator;
 
     /**
      * Constructs a UserController with the autowired parameters
@@ -69,8 +66,9 @@ public class UserController {
             return "registration";
         }
 
+        String rawPassword = user.getPassword();
         userService.save(user);
-        securityService.autoLogin(user.getUsername(), user.getPassword());
+        securityService.autoLogin(user.getUsername(), rawPassword);
 
         return "redirect:/welcome";
     }
@@ -80,7 +78,7 @@ public class UserController {
      *
      * @param model  the model for the view
      * @param error  null if no error, message if there is
-     * @param logout null if not to logout, other value if you want to logour
+     * @param logout null if not to logout, other value if you want to logout
      * @return the page to go to
      */
     @RequestMapping("/login")
