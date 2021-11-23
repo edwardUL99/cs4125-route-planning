@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionManagement()
                     .invalidSessionUrl("/session-timeout")
                     .and()
-                    .logout()
+                    .logout().invalidateHttpSession(false).deleteCookies("JSESSIONID", "remember-me")
                     .permitAll();
         }
     }

@@ -41,14 +41,9 @@ public class RouteController {
     private final WaypointService waypointService;
 
     /**
-     * Our user service for finding users
+     * The service providing authentication facilities
      */
-    private final UserService userService;
-
-    /**
-     * Our security service for determining users
-     */
-    private final SecurityService securityService;
+    private final AuthenticationService authenticationService;
 
     /**
      * The name of the routes view
@@ -70,17 +65,15 @@ public class RouteController {
      * @param graphService the service for loading the graph
      * @param routeService the service for generating the routes
      * @param waypointService the service for loading waypoints
-     * @param userService the service for loading users
-     * @param securityService the service for querying authentication
+     * @param authenticationService the service providing authentication facilties
      */
     @Autowired
     public RouteController(GraphService graphService, RouteService routeService, WaypointService waypointService,
-                           UserService userService, SecurityService securityService) {
+                           AuthenticationService authenticationService) {
         this.graphService = graphService;
         this.routeService = routeService;
         this.waypointService = waypointService;
-        this.userService = userService;
-        this.securityService = securityService;
+        this.authenticationService = authenticationService;
     }
 
     /**
@@ -217,9 +210,8 @@ public class RouteController {
                 route = ((SavedRoute) route).getSavedRoute();
             }
 
-            String username = securityService.getUsername();
-            if (username != null) {
-                boolean saved = routeService.isRouteSaved(userService.findByUsername(username), route);
+            if (authenticationService.isAuthenticated()) {
+                boolean saved = routeService.isRouteSaved(authenticationService.getAuthenticatedUser(), route);
                 model.addAttribute("unsaved", !saved);
             }
         }
@@ -245,10 +237,8 @@ public class RouteController {
             redirectAttributes.addFlashAttribute(ERROR, "The route does not exist");
             modelAndView.setViewName(ROUTES_REDIRECT);
         } else {
-            String username = securityService.getUsername();
-
-            if (username != null) {
-                User user = userService.findByUsername(username);
+            if (authenticationService.isAuthenticated()) {
+                User user = authenticationService.getAuthenticatedUser();
 
                 if (routeService.isRouteSaved(user, route)) {
                     redirectAttributes.addFlashAttribute("error", "You have already saved this route");
@@ -275,10 +265,8 @@ public class RouteController {
      */
     @GetMapping(ROUTES + "/saved")
     public String savedRoutes(Model model) {
-        String username = securityService.getUsername();
-
-        if (username != null) {
-            User user = userService.findByUsername(username);
+        if (authenticationService.isAuthenticated()) {
+            User user = authenticationService.getAuthenticatedUser();
             List<SavedRoute> savedRoutes = routeService.getSavedRoutes(user);
 
             model.addAttribute("user", user);

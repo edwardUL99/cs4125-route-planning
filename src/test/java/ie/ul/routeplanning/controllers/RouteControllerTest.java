@@ -57,15 +57,10 @@ public class RouteControllerTest {
     @MockBean
     private GraphService graphServiceMock;
     /**
-     * The mocked security service
+     * The mocked authentication service
      */
     @MockBean
-    private SecurityService securityServiceMock;
-    /**
-     * The mocked user service
-     */
-    @MockBean
-    private UserService userServiceMock;
+    private AuthenticationService authenticationServiceMock;
     /**
      * Array of waypoints used for testing purposes
      */
@@ -241,9 +236,9 @@ public class RouteControllerTest {
 
         when(routeServiceMock.getRoute(1L))
                 .thenReturn(route);
-        when(securityServiceMock.getUsername())
-                .thenReturn(username);
-        when(userServiceMock.findByUsername(username))
+        when(authenticationServiceMock.isAuthenticated())
+                .thenReturn(true);
+        when(authenticationServiceMock.getAuthenticatedUser())
                 .thenReturn(user);
         when(routeServiceMock.isRouteSaved(user, route))
                 .thenReturn(false);
@@ -255,8 +250,8 @@ public class RouteControllerTest {
                 .andExpect(model().attribute("unsaved", true));
 
         verify(routeServiceMock).getRoute(1L);
-        verify(securityServiceMock).getUsername();
-        verify(userServiceMock).findByUsername(username);
+        verify(authenticationServiceMock).isAuthenticated();
+        verify(authenticationServiceMock).getAuthenticatedUser();
         verify(routeServiceMock).isRouteSaved(user, route);
     }
 
@@ -273,9 +268,9 @@ public class RouteControllerTest {
 
         when(routeServiceMock.getRoute(routeId))
                 .thenReturn(route);
-        when(securityServiceMock.getUsername())
-                .thenReturn(username);
-        when(userServiceMock.findByUsername(username))
+        when(authenticationServiceMock.isAuthenticated())
+                .thenReturn(true);
+        when(authenticationServiceMock.getAuthenticatedUser())
                 .thenReturn(user);
         when(routeServiceMock.isRouteSaved(user, route))
                 .thenReturn(false);
@@ -286,8 +281,8 @@ public class RouteControllerTest {
                 .andExpect(redirectedUrl("/routes/" + routeId));
 
         verify(routeServiceMock).getRoute(routeId);
-        verify(securityServiceMock).getUsername();
-        verify(userServiceMock).findByUsername(username);
+        verify(authenticationServiceMock).isAuthenticated();
+        verify(authenticationServiceMock).getAuthenticatedUser();
         verify(routeServiceMock).isRouteSaved(user, route);
     }
 
@@ -313,14 +308,14 @@ public class RouteControllerTest {
      * This tests that an error occurs if the username is null as user is not logged in or anonymous
      */
     @Test
-    void shouldNotSaveWhenUsernameIsNull() throws Exception {
+    void shouldNotSaveWhenUserIsLoggedOut() throws Exception {
         long routeId = 1;
         Route route = TEST_ROUTES.get(0);
 
         when(routeServiceMock.getRoute(routeId))
                 .thenReturn(route);
-        when(securityServiceMock.getUsername())
-                .thenReturn(null);
+        when(authenticationServiceMock.isAuthenticated())
+                .thenReturn(false);
 
         mockMvc.perform(post("/routes/save_route").param("saveRouteID", "" + routeId))
                 .andExpect(status().is(302))
@@ -328,7 +323,7 @@ public class RouteControllerTest {
                 .andExpect(redirectedUrl("/routes"));
 
         verify(routeServiceMock).getRoute(routeId);
-        verify(securityServiceMock).getUsername();
+        verify(authenticationServiceMock).isAuthenticated();
     }
 
     /**
@@ -340,9 +335,9 @@ public class RouteControllerTest {
         User user = new User();
         user.setUsername(username);
 
-        when(securityServiceMock.getUsername())
-                .thenReturn(username);
-        when(userServiceMock.findByUsername(username))
+        when(authenticationServiceMock.isAuthenticated())
+                .thenReturn(true);
+        when(authenticationServiceMock.getAuthenticatedUser())
                 .thenReturn(user);
         when(routeServiceMock.getSavedRoutes(user))
                 .thenReturn(TEST_SAVED_ROUTES);
@@ -353,8 +348,8 @@ public class RouteControllerTest {
                 .andExpect(model().attribute("user", is(user)))
                 .andExpect(model().attribute("routes", is(TEST_SAVED_ROUTES)));
 
-        verify(securityServiceMock).getUsername();
-        verify(userServiceMock).findByUsername(username);
+        verify(authenticationServiceMock).isAuthenticated();
+        verify(authenticationServiceMock).getAuthenticatedUser();
         verify(routeServiceMock).getSavedRoutes(user);
     }
 
@@ -363,13 +358,13 @@ public class RouteControllerTest {
      */
     @Test
     void shouldRedirectOnSavedRoutesNotLoggedIn() throws Exception {
-        when(securityServiceMock.getUsername())
-                .thenReturn(null);
+        when(authenticationServiceMock.isAuthenticated())
+                .thenReturn(false);
 
         mockMvc.perform(get("/routes/saved"))
                 .andExpect(status().is(302))
                 .andExpect(redirectedUrl("/"));
 
-        verify(securityServiceMock).getUsername();
+        verify(authenticationServiceMock).isAuthenticated();
     }
 }
