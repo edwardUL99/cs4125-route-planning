@@ -1,5 +1,6 @@
 package ie.ul.routeplanning.routes;
 
+import ie.ul.routeplanning.repositories.WaypointsLoader;
 import ie.ul.routeplanning.routes.graph.Edge;
 import ie.ul.routeplanning.routes.graph.GraphUtils;
 import ie.ul.routeplanning.transport.TransportMethod;
@@ -54,7 +55,6 @@ public class RouteLeg implements Edge {
 
 	/**
 	 * Constructs a RouteLeg with the provided start and end waypoints and the transport method and pre-defined distance
-	 * Pre-conditions: The start and end waypoints cannot be null and cannot be equal to each other
 	 * @param start the waypoint indicating the start of the leg
 	 * @param end the waypoint indicating the end of the leg
 	 * @param transportMethod the method of transport used to travel this leg
@@ -63,6 +63,13 @@ public class RouteLeg implements Edge {
 	public RouteLeg(Waypoint start, Waypoint end, TransportMethod transportMethod, Double distance) {
 		this.start = start;
 		this.end = end;
+
+		if (this.start != null)
+			validateWaypoint(this.start, true);
+
+		if (this.end != null)
+			validateWaypoint(this.end, false);
+
 		this.transportMethod = transportMethod;
 		this.distance = distance;
 	}
@@ -94,11 +101,29 @@ public class RouteLeg implements Edge {
 	}
 
 	/**
+	 * Validates that the waypoint is valid for the start or end
+	 * @param waypoint the waypoint to validate
+	 * @param start true if the start waypoint, false if the end waypoint
+	 */
+	private void validateWaypoint(Waypoint waypoint, boolean start) {
+		Waypoint opposite = (start) ? end:this.start;
+
+		if (waypoint == null)
+			throw new IllegalStateException("The provided waypoint cannot be null");
+
+		if (waypoint.equals(opposite)) {
+			String message = (start) ? "end":"start";
+			throw new IllegalStateException("The provided waypoint cannot be the same as the " + message + " waypoint");
+		}
+	}
+
+	/**
 	 * Sets the start waypoint of this route leg
-	 * Pre-conditions: The waypoint must not be equal to the end waypoint and not be null
+	 * pre: start != null && start != self.end
 	 * @param start the new start waypoint
 	 */
 	public void setStart(Waypoint start) {
+		validateWaypoint(start, true);
 		this.start = start;
 	}
 
@@ -112,10 +137,12 @@ public class RouteLeg implements Edge {
 
 	/**
 	 * Sets the end waypoint of this route leg
-	 * Pre-conditions: The waypoint must not be equal to the start waypoint and not be null
+	 * pre: end != null && end != self.start
+	 * post: self.end = end
 	 * @param end the end waypoint
 	 */
 	public void setEnd(Waypoint end) {
+		validateWaypoint(end, false);
 		this.end = end;
 	}
 

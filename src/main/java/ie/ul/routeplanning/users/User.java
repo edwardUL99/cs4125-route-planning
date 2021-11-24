@@ -20,7 +20,7 @@ public class User {
     /**
      * The username for the user
      */
-    @Column(name="username")
+    @Column(name="username", length=32)
     private String username;
     /**
      * The user's password
