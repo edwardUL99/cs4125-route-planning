@@ -62,16 +62,11 @@ public class RouteServiceImpl implements RouteService {
     @Override
     public List<Route> generateRoutes(Graph graph, Waypoint start, Waypoint end, boolean ecoFriendly, boolean time) {
         WeightFunction weightFunction = new WeightFunctionBuilder().withEmissions(ecoFriendly).withTime(time).build();
-        Algorithm<Route> algorithm = AlgorithmFactory.dijkstraAlgorithm(start, end, weightFunction);
+        Algorithm<Route> algorithm = AlgorithmFactory.topKPathsAlgorithm(start, end, weightFunction, 4);
+        // since topKPaths is an extension of dijkstras, we can ask for 4 routes and the 1st route will be the best
         Result<Route> result = algorithm.perform(graph);
 
         List<Route> routes = new ArrayList<>(result.collect());
-
-        if (routes.size() == 1) // remove the first edge so we can find a new route on the next run of the algorithm
-            TopKAlgorithm.disconnectRouteEdge(graph, routes.get(0));
-
-        algorithm = AlgorithmFactory.topKPathsAlgorithm(start, end, weightFunction, 3);
-        routes.addAll(algorithm.perform(graph).collect());
 
         routeRepository.saveAll(routes);
 
