@@ -1,32 +1,152 @@
 [
-	{
-		"id": 1,
-		"name": "Cork",
-		"latitude": 1000.0,
-		"longitude": 2000.0
-	},
-	{
-		"id": 2,
-		"name": "Dublin",
-		"latitude": 1500.0,
-		"longitude": 2000.0
-	},
-	{
-		"id": 3,
-		"name": "Tralee",
-		"latitude": 1800.0,
-		"longitude": 2000.0
-	},
-	{
-		"id": 4,
-		"name": "Waterford",
-		"latitude": 2000.0,
-		"longitude": 1800.0
-	},
-	{
-		"id": 5,
-		"name": "London",
-		"latitude": 3500.0,
-		"longitude": 1000.0
-	}
+    {
+        "id": 1,
+        "name": "Cork",
+        "latitude": 63.66046225322529,
+        "longitude": -4.580553419677074
+    },
+    {
+        "id": 2,
+        "name": "Dublin",
+        "latitude": 30.593096759629873,
+        "longitude": -49.453421146221444
+    },
+    {
+        "id": 3,
+        "name": "Tralee",
+        "latitude": 79.88345812159963,
+        "longitude": -47.76779954736054
+    },
+    {
+        "id": 4,
+        "name": "Waterford",
+        "latitude": 46.34228194954338,
+        "longitude": -84.90605883108545
+    },
+    {
+        "id": 5,
+        "name": "London",
+        "latitude": 24.468897899159984,
+        "longitude": -41.25210908265325
+    },
+    {
+        "id": 6,
+        "name": "Galway",
+        "latitude": 1.4858224139655647,
+        "longitude": 131.35133363508623
+    },
+    {
+        "id": 7,
+        "name": "Waterford",
+        "latitude": 82.49380391192804,
+        "longitude": -28.693229952584147
+    },
+    {
+        "id": 8,
+        "name": "Wexford",
+        "latitude": -5.380289850462745,
+        "longitude": -160.65894370190176
+    },
+    {
+        "id": 9,
+        "name": "Paris",
+        "latitude": -38.89095767973643,
+        "longitude": -111.71563231930656
+    },
+    {
+        "id": 10,
+        "name": "Barcelona",
+        "latitude": -79.53226927146709,
+        "longitude": 2.8149267925155357
+    },
+    {
+        "id": 11,
+        "name": "Malaga",
+        "latitude": 4.2596779467439205,
+        "longitude": 145.33788936334963
+    },
+    {
+        "id": 12,
+        "name": "New York",
+        "latitude": -36.50089720915494,
+        "longitude": 106.9805785190702
+    },
+    {
+        "id": 13,
+        "name": "Washington",
+        "latitude": -62.760790095665655,
+        "longitude": -83.42117849083286
+    },
+    {
+        "id": 14,
+        "name": "San Francisco",
+        "latitude": -32.375389129951365,
+        "longitude": -170.95578604885793
+    },
+    {
+        "id": 15,
+        "name": "Seattle",
+        "latitude": 67.81681821504523,
+        "longitude": -83.50892885407869
+    },
+    {
+        "id": 16,
+        "name": "Sydney",
+        "latitude": -7.775773197533013,
+        "longitude": 1.1501273998871682
+    },
+    {
+        "id": 17,
+        "name": "Adelaide",
+        "latitude": 86.77929191847758,
+        "longitude": 83.6387100663274
+    },
+    {
+        "id": 18,
+        "name": "Perth",
+        "latitude": 72.7624587304758,
+        "longitude": 89.01872775860352
+    },
+    {
+        "id": 19,
+        "name": "Krakow",
+        "latitude": 22.12052339204709,
+        "longitude": 95.57071790396594
+    },
+    {
+        "id": 20,
+        "name": "Lisbon",
+        "latitude": -30.058717775203924,
+        "longitude": -124.5928858061458
+    },
+    {
+        "id": 20,
+        "name": "Rosslare",
+        "latitude": 81.83266959791288,
+        "longitude": 140.0860549289348
+    },
+    {
+        "id": 21,
+        "name": "Fishguard",
+        "latitude": 80.33286053903328,
+        "longitude": -85.55782831633971
+    },
+    {
+        "id": 22,
+        "name": "Shannon",
+        "latitude": -25.65362061036737,
+        "longitude": -27.164619977352004
+    },
+    {
+        "id": 23,
+        "name": "Lanzarote",
+        "latitude": 43.58961928967648,
+        "longitude": -168.5741952878409
+    },
+    {
+        "id": 24,
+        "name": "Glasgow",
+        "latitude": -23.57352946131543,
+        "longitude": -6.340612276531317
+    }
 ]

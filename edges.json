@@ -1,87 +1,309 @@
 [
-	{
-		"start": 1,
-		"end": 2,
-		"transportMethod": "Train",
-		"distance": 250.00,
-		"bidirectional": false
-	},
-	{
-		"start": 1,
-		"end": 2,
-		"transportMethod": "Bus",
-		"distance": 270.00
-	},
-	{
-		"start": 1,
-		"end": 2,
-		"transportMethod": "Plane",
-		"distance": 210.00
-	},
-	{
-		"start": 1,
-		"end": 3,
-		"transportMethod": "Bus",
-		"distance": 120.00
-	},
-	{
-		"start": 1,
-		"end": 3,
-		"transportMethod": "Train",
-		"distance": 150.00
-	},
-	{
-		"start": 1,
-		"end": 4,
-		"transportMethod": "Train",
-		"distance": 260.00
-	},
-	{
-		"start": 1,
-		"end": 4,
-		"transportMethod": "Bus",
-		"distance": 350.00
-	},
-	{
-		"start": 2,
-		"end": 4,
-		"transportMethod": "Car",
-		"distance": 400.00
-	},
-	{
-		"start": 2,
-		"end": 4,
-		"transportMethod": "Train",
-		"distance": 350.00
-	},
-	{
-		"start": 2,
-		"end": 3,
-		"transportMethod": "Plane",
-		"distance": 100.00
-	},
-	{
-		"start": 2,
-		"end": 3,
-		"transportMethod": "Train",
-		"distance": 110.00
-	},
-	{
-		"start": 3,
-		"end": 1,
-		"transportMethod": "Car",
-		"distance": 50.00
-	},
-	{
-		"start": 1,
-		"end": 5,
-		"transportMethod": "Plane",
-		"distance": 300.0
-	},
-	{
-		"start": 2,
-		"end": 5,
-		"transportMethod": "Plane",
-		"distance": 350.00
-	}
+    {
+        "start": 1,
+        "end": 2,
+        "transportMethod": "Train",
+        "distance": 250.0,
+        "bidirectional": false
+    },
+    {
+        "start": 1,
+        "end": 2,
+        "transportMethod": "Bus",
+        "distance": 270.0
+    },
+    {
+        "start": 1,
+        "end": 2,
+        "transportMethod": "Plane",
+        "distance": 210.0
+    },
+    {
+        "start": 1,
+        "end": 3,
+        "transportMethod": "Bus",
+        "distance": 120.0
+    },
+    {
+        "start": 1,
+        "end": 3,
+        "transportMethod": "Train",
+        "distance": 150.0
+    },
+    {
+        "start": 1,
+        "end": 4,
+        "transportMethod": "Train",
+        "distance": 260.0
+    },
+    {
+        "start": 1,
+        "end": 4,
+        "transportMethod": "Bus",
+        "distance": 350.0
+    },
+    {
+        "start": 2,
+        "end": 4,
+        "transportMethod": "Car",
+        "distance": 400.0
+    },
+    {
+        "start": 2,
+        "end": 4,
+        "transportMethod": "Train",
+        "distance": 350.0
+    },
+    {
+        "start": 2,
+        "end": 3,
+        "transportMethod": "Plane",
+        "distance": 100.0
+    },
+    {
+        "start": 2,
+        "end": 3,
+        "transportMethod": "Train",
+        "distance": 110.0
+    },
+    {
+        "start": 3,
+        "end": 1,
+        "transportMethod": "Car",
+        "distance": 50.0
+    },
+    {
+        "start": 1,
+        "end": 5,
+        "transportMethod": "Plane",
+        "distance": 300.0
+    },
+    {
+        "start": 2,
+        "end": 5,
+        "transportMethod": "Plane",
+        "distance": 350.0
+    },
+    {
+        "start": 2,
+        "end": 6,
+        "transportMethod": "Bus",
+        "distance": 360.0
+    },
+    {
+        "start": 2,
+        "end": 6,
+        "transportMethod": "Car",
+        "distance": 340.0
+    },
+    {
+        "start": 2,
+        "end": 6,
+        "transportMethod": "Train",
+        "distance": 330.0
+    },
+    {
+        "start": 1,
+        "end": 6,
+        "transportMethod": "Bus",
+        "distance": 400.0
+    },
+    {
+        "start": 1,
+        "end": 6,
+        "transportMethod": "Car",
+        "distance": 410.0
+    },
+    {
+        "start": 1,
+        "end": 20,
+        "transportMethod": "Car",
+        "distance": 380.0
+    },
+    {
+        "start": 20,
+        "end": 21,
+        "transportMethod": "Ferry",
+        "distance": 100.0
+    },
+    {
+        "start": 21,
+        "end": 5,
+        "transportMethod": "Car",
+        "distance": 500.0
+    },
+    {
+        "start": 2,
+        "end": 20,
+        "transportMethod": "Car",
+        "distance": 240.0
+    },
+    {
+        "start": 5,
+        "end": 12,
+        "transportMethod": "Plane",
+        "distance": 5570.0
+    },
+    {
+        "start": 22,
+        "end": 12,
+        "transportMethod": "Plane",
+        "distance": 4960.0
+    },
+    {
+        "start": 2,
+        "end": 12,
+        "transportMethod": "Plane",
+        "distance": 5114.46
+    },
+    {
+        "start": 2,
+        "end": 13,
+        "transportMethod": "Plane",
+        "distance": 5600.0
+    },
+    {
+        "start": 22,
+        "end": 13,
+        "transportMethod": "Plane",
+        "distance": 5400.0
+    },
+    {
+        "start": 12,
+        "end": 13,
+        "transportMethod": "Car",
+        "distance": 200.0
+    },
+    {
+        "start": 12,
+        "end": 14,
+        "transportMethod": "Car",
+        "distance": 600.0
+    },
+    {
+        "start": 12,
+        "end": 14,
+        "transportMethod": "Plane",
+        "distance": 580.0
+    },
+    {
+        "start": 2,
+        "end": 19,
+        "transportMethod": "Plane",
+        "distance": 400.0
+    },
+    {
+        "start": 5,
+        "end": 16,
+        "transportMethod": "Plane",
+        "distance": 7000.0
+    },
+    {
+        "start": 16,
+        "end": 17,
+        "transportMethod": "Plane",
+        "distance": 400.0
+    },
+    {
+        "start": 16,
+        "end": 17,
+        "transportMethod": "Car",
+        "distance": 380.0
+    },
+    {
+        "start": 16,
+        "end": 17,
+        "transportMethod": "Bus",
+        "distance": 385.0
+    },
+    {
+        "start": 16,
+        "end": 18,
+        "transportMethod": "Bus",
+        "distance": 400.0
+    },
+    {
+        "start": 1,
+        "end": 9,
+        "transportMethod": "Plane",
+        "distance": 500.0
+    },
+    {
+        "start": 1,
+        "end": 10,
+        "transportMethod": "Plane",
+        "distance": 650.0
+    },
+    {
+        "start": 1,
+        "end": 11,
+        "transportMethod": "Plane",
+        "distance": 660.0
+    },
+    {
+        "start": 1,
+        "end": 20,
+        "transportMethod": "Plane",
+        "distance": 630.0
+    },
+    {
+        "start": 10,
+        "end": 11,
+        "transportMethod": "Bus",
+        "distance": 400.0
+    },
+    {
+        "start": 1,
+        "end": 23,
+        "transportMethod": "Plane",
+        "distance": 700.0
+    },
+    {
+        "start": 2,
+        "end": 23,
+        "transportMethod": "Plane",
+        "distance": 820.0
+    },
+    {
+        "start": 10,
+        "end": 23,
+        "transportMethod": "Plane",
+        "distance": 500.0
+    },
+    {
+        "start": 11,
+        "end": 23,
+        "transportMethod": "Plane",
+        "distance": 300.0
+    },
+    {
+        "start": 17,
+        "end": 18,
+        "transportMethod": "Train",
+        "distance": 100.0
+    },
+    {
+        "start": 5,
+        "end": 24,
+        "transportMethod": "Train",
+        "distance": 500.0
+    },
+    {
+        "start": 5,
+        "end": 24,
+        "transportMethod": "Plane",
+        "distance": 490.0
+    },
+    {
+        "start": 5,
+        "end": 24,
+        "transportMethod": "Bus",
+        "distance": 600.0
+    },
+    {
+        "start": 5,
+        "end": 24,
+        "transportMethod": "Car",
+        "distance": 520.0
+    }
 ]
