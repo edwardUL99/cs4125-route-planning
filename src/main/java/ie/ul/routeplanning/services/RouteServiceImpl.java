@@ -4,10 +4,7 @@ import ie.ul.routeplanning.repositories.RouteRepository;
 import ie.ul.routeplanning.routes.Route;
 import ie.ul.routeplanning.routes.SavedRoute;
 import ie.ul.routeplanning.routes.Waypoint;
-import ie.ul.routeplanning.routes.algorithms.Algorithm;
-import ie.ul.routeplanning.routes.algorithms.AlgorithmFactory;
-import ie.ul.routeplanning.routes.algorithms.Result;
-import ie.ul.routeplanning.routes.algorithms.TopKAlgorithm;
+import ie.ul.routeplanning.routes.algorithms.*;
 import ie.ul.routeplanning.routes.graph.Graph;
 import ie.ul.routeplanning.routes.graph.weights.WeightFunction;
 import ie.ul.routeplanning.routes.graph.weights.WeightFunctionBuilder;
@@ -27,6 +24,10 @@ public class RouteServiceImpl implements RouteService {
      * The RouteRepository for saving/loading routes
      */
     private final RouteRepository routeRepository;
+    /**
+     * The context for working with algorithms
+     */
+    private final AlgorithmContext<Route> algorithmContext = new AlgorithmContext<>();
 
     /**
      * Creates a RouteServiceImpl with the provided route repository dependency
@@ -49,6 +50,29 @@ public class RouteServiceImpl implements RouteService {
     }
 
     /**
+     * Sets up the algorithm context for this algorithm execution and returns the result
+     * @param graph       the graph to generate the route with
+     * @param start       the starting waypoint
+     * @param end         the end waypoint
+     * @param ecoFriendly true if the routes should be CO2 aware
+     * @param time        true if time should be factored into the route duration
+     * @return the list of generated routes
+     */
+    private List<Route> performAlgorithm(Graph graph, Waypoint start, Waypoint end, boolean ecoFriendly, boolean time) {
+        WeightFunction weightFunction = new WeightFunctionBuilder().withEmissions(ecoFriendly).withTime(time).build();
+        // since topKPaths is an extension of dijkstras, we can ask for 4 routes and the 1st route will be the best
+        Algorithm<Route> algorithm = AlgorithmFactory.topKPathsAlgorithm(start, end, weightFunction, 4);
+
+        algorithmContext.setAlgorithm(algorithm);
+        algorithmContext.setGraph(graph);
+        Result<Route> result = algorithmContext.perform();
+
+        algorithmContext.reset();
+
+        return new ArrayList<>(result.collect());
+    }
+
+    /**
      * Generate the routes using the provided graph and waypoints. It is expected that the first route in the list, if
      * any, is the best route, with the subsequent routes being the next best ones
      *
@@ -61,13 +85,7 @@ public class RouteServiceImpl implements RouteService {
      */
     @Override
     public List<Route> generateRoutes(Graph graph, Waypoint start, Waypoint end, boolean ecoFriendly, boolean time) {
-        WeightFunction weightFunction = new WeightFunctionBuilder().withEmissions(ecoFriendly).withTime(time).build();
-        Algorithm<Route> algorithm = AlgorithmFactory.topKPathsAlgorithm(start, end, weightFunction, 4);
-        // since topKPaths is an extension of dijkstras, we can ask for 4 routes and the 1st route will be the best
-        Result<Route> result = algorithm.perform(graph);
-
-        List<Route> routes = new ArrayList<>(result.collect());
-
+        List<Route> routes = performAlgorithm(graph, start, end, ecoFriendly, time);
         routeRepository.saveAll(routes);
 
         return routes;
