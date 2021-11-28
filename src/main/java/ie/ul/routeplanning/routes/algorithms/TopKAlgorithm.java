@@ -63,7 +63,7 @@ public class TopKAlgorithm extends DijkstraAlgorithm {
            generatedRoutes.add(route);
        }
 
-       return new RouteResult(generatedRoutes);
+       return new ListResult<>(generatedRoutes);
     }
 
     /**

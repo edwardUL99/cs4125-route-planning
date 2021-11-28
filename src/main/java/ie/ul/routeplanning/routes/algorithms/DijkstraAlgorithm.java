@@ -116,7 +116,7 @@ public class DijkstraAlgorithm extends PathFindingAlgorithm {
      */
     @Override
     public Result<Route> perform(Graph graph) {
-        RouteResult routeResult = new RouteResult();
+        Result<Route> routeResult = new ListResult<>();
         Route route = dijkstra(graph);
 
         if (route != null)
