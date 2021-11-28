@@ -25,12 +25,19 @@ mysql> FLUSH PRIVILEGES;
 ```
 Change `<database-name>`, `<username>` and `<password>` to values you wish
 
-In src/main/resources/application.properties, change the following properties:
+In src/main/resources/application.properties, uncomment the following lines (by removing the # symbols):
 ```
-spring.datasource.url=jdbc:mysql://localhost:3306/<database-name>
-spring.datasource.username=<username>
-spring.datasource.password=<password>
+#spring.datasource.url=jdbc:mysql://localhost:3306/<database-name>
+#spring.datasource.username=<username>
+#spring.datasource.password=<password>
+#spring.jpa.properties.hibernate.dialect=or
 ```
+, then comment out this line (by placing a # in front of it):
+```
+spring.jpa.hibernate.ddl-auto=create-drop
+```
+, then change the database name, username and password in the uncommented lines
+
 Again, change the values in triangle brackets to the values you used setting up the database.
 
 ## Quick Run
